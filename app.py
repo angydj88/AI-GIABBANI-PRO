@@ -434,7 +434,7 @@ p, span, li, label, div {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   FILE UPLOADER
+   FILE UPLOADER · TRADUCIDO + ESTILIZADO
    ══════════════════════════════════════════════════════════════ */
 [data-testid="stFileUploader"] {
     background: transparent !important;
@@ -463,12 +463,111 @@ p, span, li, label, div {
 
 [data-testid="stFileUploader"] small,
 [data-testid="stFileUploader"] [data-testid="stMarkdownContainer"] p {
-    color: var(--text-muted) !important;
+    color: var(--text-secondary) !important;
 }
 
 [data-testid="stFileUploaderDropzone"] {
     background: transparent !important;
     border: none !important;
+}
+
+/* ── Traducir "Drag and drop file here" ── */
+[data-testid="stFileUploaderDropzone"] [data-testid="stMarkdownContainer"] p {
+    font-size: 0px !important;
+    line-height: 0 !important;
+    color: transparent !important;
+}
+
+[data-testid="stFileUploaderDropzone"] [data-testid="stMarkdownContainer"] p::after {
+    content: 'Arrastra y suelta el archivo aquí' !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Traducir "Limit 200MB per file • PDF" ── */
+[data-testid="stFileUploaderDropzone"] > div > span {
+    font-size: 0px !important;
+    color: transparent !important;
+}
+
+[data-testid="stFileUploaderDropzone"] > div > span::after {
+    content: 'Límite 200MB por archivo · PDF' !important;
+    font-size: 0.75rem !important;
+    color: var(--text-muted) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+}
+
+/* ── Traducir botón "Browse files" ── */
+[data-testid="stFileUploaderDropzone"] button {
+    font-size: 0px !important;
+    color: transparent !important;
+    background: var(--blue-50) !important;
+    border: 1px solid var(--blue-200) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 0.5rem 1.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    min-height: 38px !important;
+    position: relative !important;
+}
+
+[data-testid="stFileUploaderDropzone"] button::after {
+    content: 'Seleccionar archivo' !important;
+    font-size: 0.82rem !important;
+    color: var(--blue-700) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+[data-testid="stFileUploaderDropzone"] button:hover {
+    background: var(--blue-100) !important;
+    border-color: var(--blue-400) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+/* ── Icono de subida visible ── */
+[data-testid="stFileUploaderDropzone"] svg {
+    color: var(--blue-400) !important;
+    stroke: var(--blue-400) !important;
+    opacity: 0.8 !important;
+}
+
+/* ── Archivo subido (chip con nombre) ── */
+[data-testid="stFileUploaderFile"] {
+    background: var(--blue-50) !important;
+    border: 1px solid var(--blue-100) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 0.4rem 0.8rem !important;
+}
+
+[data-testid="stFileUploaderFile"] span {
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
+    font-size: 0.82rem !important;
+}
+
+[data-testid="stFileUploaderFile"] button {
+    color: var(--accent-red) !important;
+    font-size: 0.85rem !important;
+    min-height: auto !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0.2rem !important;
+}
+
+[data-testid="stFileUploaderFile"] button::after {
+    content: '' !important;
+    display: none !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
