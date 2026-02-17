@@ -593,7 +593,7 @@ p, span, li, label, div {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ALERTS & EXPANDER
+   ALERTS & EXPANDER  (FIXED ARROW ICON)
    ══════════════════════════════════════════════════════════════ */
 [data-testid="stExpander"] {
     background: var(--bg-white) !important;
@@ -607,6 +607,47 @@ p, span, li, label, div {
     color: var(--text-primary) !important;
     font-weight: 600 !important;
     padding: 1rem 1.25rem !important;
+    cursor: pointer;
+}
+
+/* ── FIX: Ocultar texto "arrow" del marker nativo ── */
+[data-testid="stExpander"] summary::marker,
+[data-testid="stExpander"] summary::-webkit-details-marker {
+    display: none !important;
+    content: '' !important;
+    font-size: 0 !important;
+    color: transparent !important;
+}
+
+/* ── FIX: Asegurar que el SVG del toggle se muestre ── */
+[data-testid="stExpander"] summary svg,
+[data-testid="stExpander"] [data-testid="stExpanderToggleIcon"] svg {
+    display: inline-block !important;
+    visibility: visible !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    fill: var(--text-muted) !important;
+    stroke: var(--text-muted) !important;
+    flex-shrink: 0 !important;
+}
+
+[data-testid="stExpander"] [data-testid="stExpanderToggleIcon"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* ── FIX: Si Streamlit usa texto como fallback del icono ── */
+[data-testid="stExpander"] summary > span[data-testid="stExpanderToggleIcon"] {
+    font-size: 0px !important;
+    color: transparent !important;
+}
+
+[data-testid="stExpander"] summary > span[data-testid="stExpanderToggleIcon"] svg {
+    font-size: 1rem !important;
 }
 
 [data-testid="stExpander"] [data-testid="stExpanderDetails"] {
