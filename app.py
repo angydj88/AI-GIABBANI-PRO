@@ -13,66 +13,82 @@ from datetime import datetime
 st.set_page_config(
     page_title="GABBIANI MASTER AI · Motor de Corte Industrial",
     layout="wide",
-    page_icon="⬡",
+    page_icon="🔷",
     initial_sidebar_state="collapsed"
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
-# CSS PREMIUM · BLACK & GOLD EDITION
+# CSS PROFESIONAL · CORPORATE BLUE & WHITE EDITION
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:wght@700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-    --bg-void: #08090c;
-    --bg-primary: #0c0d12;
-    --bg-secondary: #111318;
-    --bg-card: #16181f;
-    --bg-card-hover: #1c1e27;
-    --bg-elevated: #1f2129;
-    --bg-input: #13141a;
-    
-    --border-subtle: rgba(212,175,55,0.08);
-    --border-medium: rgba(212,175,55,0.15);
-    --border-strong: rgba(212,175,55,0.3);
-    --border-glow: rgba(212,175,55,0.5);
-    
-    --gold-50: #fef9e7;
-    --gold-100: #fdf0c4;
-    --gold-200: #f5d778;
-    --gold-300: #e8c547;
-    --gold-400: #d4af37;
-    --gold-500: #c5a028;
-    --gold-600: #a68523;
-    --gold-700: #856a1c;
-    --gold-800: #5c4a14;
-    --gold-900: #3d310e;
-    
-    --text-primary: #f0ebe0;
-    --text-secondary: #a09882;
-    --text-muted: #6b6355;
-    --text-gold: #d4af37;
-    --text-gold-light: #e8c547;
-    
-    --accent-emerald: #10b981;
-    --accent-red: #ef4444;
-    --accent-amber: #f59e0b;
-    --accent-blue: #60a5fa;
-    
-    --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f5d778 40%, #d4af37 60%, #a68523 100%);
-    --gradient-gold-subtle: linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(245,215,120,0.05) 100%);
-    --gradient-gold-border: linear-gradient(135deg, #a68523 0%, #d4af37 50%, #a68523 100%);
-    --gradient-dark: linear-gradient(180deg, #111318 0%, #0c0d12 100%);
-    --gradient-card: linear-gradient(145deg, #16181f 0%, #111318 100%);
-    --gradient-shine: linear-gradient(110deg, transparent 25%, rgba(212,175,55,0.03) 50%, transparent 75%);
-    
-    --shadow-gold-sm: 0 2px 8px rgba(212,175,55,0.08);
-    --shadow-gold-md: 0 4px 20px rgba(212,175,55,0.1);
-    --shadow-gold-lg: 0 8px 40px rgba(212,175,55,0.12);
-    --shadow-gold-glow: 0 0 30px rgba(212,175,55,0.15);
-    --shadow-dark: 0 20px 60px rgba(0,0,0,0.5);
-    
+    --bg-body: #f0f2f5;
+    --bg-white: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-elevated: #f8f9fb;
+    --bg-input: #f5f6f8;
+    --bg-sidebar: #1e293b;
+    --bg-header: #0f172a;
+    --bg-header-gradient: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1a4b8c 100%);
+
+    --border-light: #e2e8f0;
+    --border-medium: #cbd5e1;
+    --border-strong: #94a3b8;
+    --border-focus: #2563eb;
+
+    --blue-50: #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-200: #bfdbfe;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+    --blue-800: #1e40af;
+    --blue-900: #1e3a5f;
+
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --text-blue: #2563eb;
+    --text-white: #ffffff;
+
+    --accent-emerald: #059669;
+    --accent-emerald-light: #d1fae5;
+    --accent-red: #dc2626;
+    --accent-red-light: #fee2e2;
+    --accent-amber: #d97706;
+    --accent-amber-light: #fef3c7;
+    --accent-blue-light: #dbeafe;
+
+    --gradient-blue: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
+    --gradient-header: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1a4b8c 100%);
+    --gradient-subtle: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.08), 0 10px 10px -5px rgba(0,0,0,0.03);
+    --shadow-blue: 0 4px 14px rgba(37,99,235,0.18);
+    --shadow-blue-lg: 0 8px 25px rgba(37,99,235,0.22);
+
+    --radius-xs: 6px;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -82,25 +98,25 @@ st.markdown("""
 
 /* ── GLOBAL ── */
 .stApp {
-    background: var(--bg-void) !important;
-    font-family: 'Inter', -apple-system, sans-serif !important;
+    background: var(--bg-body) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
 .stApp > header { background: transparent !important; }
 
 .main .block-container {
-    padding: 2rem 3rem 4rem 3rem !important;
+    padding: 1.5rem 3rem 4rem 3rem !important;
     max-width: 1440px !important;
 }
 
 /* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--gray-100); }
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--gold-700), var(--gold-800));
+    background: var(--gray-300);
     border-radius: 10px;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--gold-600); }
+::-webkit-scrollbar-thumb:hover { background: var(--gray-400); }
 
 /* ── HIDE STREAMLIT DEFAULTS ── */
 #MainMenu { visibility: hidden; }
@@ -125,40 +141,31 @@ p, span, li, label, div {
    ══════════════════════════════════════════════════════════════ */
 .hero-wrapper {
     position: relative;
-    margin: -1rem -1rem 2.5rem -1rem;
-    border-radius: var(--radius-2xl);
+    margin: -0.5rem -1rem 2rem -1rem;
+    border-radius: var(--radius-xl);
     overflow: hidden;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-medium);
-    box-shadow: var(--shadow-dark), var(--shadow-gold-md);
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-lg);
 }
 
-.hero-gold-line {
-    height: 2px;
-    background: var(--gradient-gold);
-    box-shadow: 0 1px 15px rgba(212,175,55,0.4);
+.hero-blue-line {
+    height: 4px;
+    background: var(--gradient-blue);
 }
 
 .hero-content {
-    padding: 2.5rem 3rem 2rem 3rem;
+    padding: 2rem 2.5rem 1.8rem 2.5rem;
     position: relative;
+    background: var(--bg-white);
 }
 
 .hero-content::after {
     content: '';
     position: absolute;
-    top: -40%; right: -10%;
+    top: -50%; right: -15%;
     width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 65%);
-    pointer-events: none;
-}
-
-.hero-content::before {
-    content: '';
-    position: absolute;
-    bottom: -30%; left: -5%;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(212,175,55,0.02) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(37,99,235,0.03) 0%, transparent 65%);
     pointer-events: none;
 }
 
@@ -169,109 +176,106 @@ p, span, li, label, div {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--gold-400);
-    margin-bottom: 1.25rem;
-    padding: 6px 16px;
-    background: rgba(212,175,55,0.06);
-    border: 1px solid rgba(212,175,55,0.12);
+    color: var(--blue-600);
+    margin-bottom: 1rem;
+    padding: 5px 14px;
+    background: var(--blue-50);
+    border: 1px solid var(--blue-100);
     border-radius: 100px;
 }
 
 .hero-mono-tag .tag-dot {
     width: 6px; height: 6px;
-    background: var(--gold-400);
+    background: var(--blue-500);
     border-radius: 50%;
-    animation: pulse-gold 2.5s ease-in-out infinite;
-    box-shadow: 0 0 8px rgba(212,175,55,0.6);
+    animation: pulse-blue 2.5s ease-in-out infinite;
+    box-shadow: 0 0 6px rgba(37,99,235,0.5);
 }
 
-@keyframes pulse-gold {
-    0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(212,175,55,0.6); }
-    50% { opacity: 0.4; box-shadow: 0 0 4px rgba(212,175,55,0.3); }
+@keyframes pulse-blue {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(37,99,235,0.5); }
+    50% { opacity: 0.3; box-shadow: 0 0 3px rgba(37,99,235,0.2); }
 }
 
 .hero-title-line {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 16px;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
 }
 
 .hero-brand {
-    font-family: 'Playfair Display', serif !important;
-    font-size: 2.6rem !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 2.2rem !important;
     font-weight: 900 !important;
     letter-spacing: -0.03em !important;
     line-height: 1 !important;
     margin: 0 !important;
-    color: var(--text-primary) !important;
+    color: var(--gray-900) !important;
 }
 
-.hero-brand .gold {
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: brightness(1.1);
+.hero-brand .blue {
+    color: var(--blue-600);
 }
 
 .hero-edition {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gray-500);
+    letter-spacing: 0.06em;
     padding: 3px 10px;
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border-light);
     border-radius: 4px;
+    background: var(--gray-50);
 }
 
 .hero-desc {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     color: var(--text-secondary);
-    line-height: 1.6;
-    margin: 0 0 1.5rem 0;
-    max-width: 700px;
+    line-height: 1.65;
+    margin: 0 0 1.25rem 0;
+    max-width: 720px;
 }
 
 .hero-status-row {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1rem;
     padding-top: 1.25rem;
-    border-top: 1px solid var(--border-subtle);
+    border-top: 1px solid var(--border-light);
     flex-wrap: wrap;
 }
 
 .status-chip {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     padding: 5px 14px;
     border-radius: 100px;
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
 }
 
 .chip-online {
-    background: rgba(16,185,129,0.08);
-    border: 1px solid rgba(16,185,129,0.2);
+    background: var(--accent-emerald-light);
+    border: 1px solid rgba(5,150,105,0.2);
     color: var(--accent-emerald);
 }
 
-.chip-gold {
-    background: rgba(212,175,55,0.06);
-    border: 1px solid rgba(212,175,55,0.15);
-    color: var(--gold-300);
+.chip-blue {
+    background: var(--blue-50);
+    border: 1px solid var(--blue-100);
+    color: var(--blue-700);
 }
 
 .chip-neutral {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-muted);
+    background: var(--gray-50);
+    border: 1px solid var(--border-light);
+    color: var(--gray-500);
 }
 
 .chip-dot {
@@ -281,18 +285,18 @@ p, span, li, label, div {
 
 .chip-dot.green {
     background: var(--accent-emerald);
-    box-shadow: 0 0 6px rgba(16,185,129,0.5);
+    box-shadow: 0 0 5px rgba(5,150,105,0.4);
     animation: pulse-green 2s ease-in-out infinite;
 }
 
 @keyframes pulse-green {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+    50% { opacity: 0.35; }
 }
 
-.chip-dot.gold {
-    background: var(--gold-400);
-    box-shadow: 0 0 6px rgba(212,175,55,0.4);
+.chip-dot.blue {
+    background: var(--blue-500);
+    box-shadow: 0 0 5px rgba(37,99,235,0.3);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -302,9 +306,9 @@ p, span, li, label, div {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin: 2.5rem 0 1.25rem 0;
+    margin: 2rem 0 1.25rem 0;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-light);
     position: relative;
 }
 
@@ -313,23 +317,25 @@ p, span, li, label, div {
     position: absolute;
     bottom: -1px;
     left: 0;
-    width: 60px;
-    height: 1px;
-    background: var(--gradient-gold);
+    width: 50px;
+    height: 2px;
+    background: var(--gradient-blue);
+    border-radius: 2px;
 }
 
 .sec-icon {
-    width: 42px; height: 42px;
+    width: 40px; height: 40px;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(212,175,55,0.06);
-    border: 1px solid rgba(212,175,55,0.12);
+    background: var(--blue-50);
+    border: 1px solid var(--blue-100);
     border-radius: var(--radius-sm);
-    font-size: 18px;
+    font-size: 17px;
     flex-shrink: 0;
+    color: var(--blue-600);
 }
 
 .sec-text .sec-title {
-    font-size: 1.1rem !important;
+    font-size: 1.05rem !important;
     font-weight: 700 !important;
     color: var(--text-primary) !important;
     margin: 0 !important;
@@ -345,61 +351,54 @@ p, span, li, label, div {
 .sec-badge {
     margin-left: auto;
     padding: 4px 14px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
+    background: var(--gray-50);
+    border: 1px solid var(--border-light);
     border-radius: 100px;
     font-size: 11px;
     font-weight: 700;
-    color: var(--text-secondary);
+    color: var(--gray-500);
     font-family: 'JetBrains Mono', monospace;
     letter-spacing: 0.04em;
 }
 
 /* ══════════════════════════════════════════════════════════════
-   METRIC CARDS
+   METRIC / KPI CARDS
    ══════════════════════════════════════════════════════════════ */
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
-    margin: 1.5rem 0;
+    margin: 1.25rem 0;
 }
 
 .kpi-card {
     position: relative;
-    padding: 1.4rem 1.5rem;
-    background: var(--gradient-card);
-    border: 1px solid var(--border-subtle);
+    padding: 1.3rem 1.4rem;
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
     overflow: hidden;
-    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-xs);
 }
 
 .kpi-card:hover {
     border-color: var(--border-medium);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-gold-md);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .kpi-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 2px;
+    height: 3px;
 }
 
-.kpi-card.gold::before { background: var(--gradient-gold); }
+.kpi-card.blue::before { background: var(--gradient-blue); }
 .kpi-card.emerald::before { background: linear-gradient(90deg, #059669, #10b981, #34d399); }
-.kpi-card.neutral::before { background: linear-gradient(90deg, #4b5563, #6b7280, #9ca3af); }
+.kpi-card.neutral::before { background: linear-gradient(90deg, #94a3b8, #cbd5e1); }
 .kpi-card.amber::before { background: linear-gradient(90deg, #d97706, #f59e0b, #fbbf24); }
-
-.kpi-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: var(--gradient-shine);
-    pointer-events: none;
-}
 
 .kpi-label {
     font-size: 10px;
@@ -407,11 +406,11 @@ p, span, li, label, div {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-muted);
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
 }
 
 .kpi-value {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
     font-weight: 800;
     color: var(--text-primary);
     font-family: 'JetBrains Mono', monospace;
@@ -420,7 +419,7 @@ p, span, li, label, div {
 }
 
 .kpi-unit {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     font-weight: 500;
     color: var(--text-muted);
     margin-left: 3px;
@@ -442,18 +441,18 @@ p, span, li, label, div {
 }
 
 [data-testid="stFileUploader"] > div {
-    background: var(--bg-card) !important;
-    border: 1px dashed var(--border-medium) !important;
+    background: var(--bg-white) !important;
+    border: 2px dashed var(--border-medium) !important;
     border-radius: var(--radius-lg) !important;
     padding: 2.5rem !important;
     transition: all 0.3s ease !important;
-    position: relative;
+    box-shadow: var(--shadow-xs) !important;
 }
 
 [data-testid="stFileUploader"] > div:hover {
-    border-color: var(--gold-400) !important;
-    background: rgba(212,175,55,0.02) !important;
-    box-shadow: var(--shadow-gold-sm) !important;
+    border-color: var(--blue-400) !important;
+    background: var(--blue-50) !important;
+    box-shadow: var(--shadow-blue) !important;
 }
 
 [data-testid="stFileUploader"] label {
@@ -472,26 +471,21 @@ p, span, li, label, div {
     border: none !important;
 }
 
-/* Traducciones via pseudo-elements no funcionan en Streamlit, 
-   pero estilizamos los botones del uploader */
-[data-testid="stFileUploaderDropzoneInput"] + div {
-    color: var(--text-secondary) !important;
-}
-
 /* ══════════════════════════════════════════════════════════════
    THUMBNAILS / PAGE GRID
    ══════════════════════════════════════════════════════════════ */
 [data-testid="stImage"] {
     border-radius: var(--radius-sm) !important;
     overflow: hidden !important;
-    border: 1px solid var(--border-subtle) !important;
-    transition: all 0.3s ease !important;
-    background: var(--bg-card) !important;
+    border: 1px solid var(--border-light) !important;
+    transition: all 0.25s ease !important;
+    background: var(--bg-white) !important;
+    box-shadow: var(--shadow-xs) !important;
 }
 
 [data-testid="stImage"]:hover {
-    border-color: var(--gold-400) !important;
-    box-shadow: var(--shadow-gold-sm) !important;
+    border-color: var(--blue-400) !important;
+    box-shadow: var(--shadow-blue) !important;
     transform: scale(1.02);
 }
 
@@ -505,7 +499,7 @@ p, span, li, label, div {
 }
 
 [data-testid="stCheckbox"] label:hover {
-    color: var(--text-gold) !important;
+    color: var(--text-blue) !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -514,27 +508,27 @@ p, span, li, label, div {
 .stButton > button {
     font-family: 'Inter', sans-serif !important;
     font-weight: 700 !important;
-    letter-spacing: 0.04em !important;
+    letter-spacing: 0.03em !important;
     border-radius: var(--radius-sm) !important;
     padding: 0.7rem 2rem !important;
-    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    transition: all 0.2s ease !important;
     border: none !important;
-    font-size: 0.88rem !important;
+    font-size: 0.85rem !important;
     text-transform: uppercase !important;
 }
 
 .stButton > button[kind="primary"],
 .stButton > button[data-testid="baseButton-primary"] {
-    background: var(--gradient-gold) !important;
-    color: #0c0d12 !important;
-    box-shadow: 0 4px 20px rgba(212,175,55,0.25) !important;
+    background: var(--gradient-blue) !important;
+    color: var(--text-white) !important;
+    box-shadow: var(--shadow-blue) !important;
 }
 
 .stButton > button[kind="primary"]:hover,
 .stButton > button[data-testid="baseButton-primary"]:hover {
-    box-shadow: 0 6px 30px rgba(212,175,55,0.4) !important;
+    box-shadow: var(--shadow-blue-lg) !important;
     transform: translateY(-2px) !important;
-    filter: brightness(1.1) !important;
+    filter: brightness(1.08) !important;
 }
 
 .stButton > button[kind="primary"]:active,
@@ -545,39 +539,40 @@ p, span, li, label, div {
 
 .stButton > button[kind="secondary"],
 .stButton > button[data-testid="baseButton-secondary"] {
-    background: var(--bg-card) !important;
+    background: var(--bg-white) !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-medium) !important;
 }
 
 .stButton > button[kind="secondary"]:hover,
 .stButton > button[data-testid="baseButton-secondary"]:hover {
-    border-color: var(--gold-400) !important;
-    box-shadow: var(--shadow-gold-sm) !important;
+    border-color: var(--blue-400) !important;
+    background: var(--blue-50) !important;
+    box-shadow: var(--shadow-sm) !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
    DOWNLOAD BUTTON
    ══════════════════════════════════════════════════════════════ */
 .stDownloadButton > button {
-    background: var(--gradient-gold) !important;
-    color: #0c0d12 !important;
+    background: var(--gradient-blue) !important;
+    color: var(--text-white) !important;
     font-family: 'Inter', sans-serif !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.05em !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
     border-radius: var(--radius-sm) !important;
     padding: 0.8rem 2.5rem !important;
     border: none !important;
-    box-shadow: 0 4px 20px rgba(212,175,55,0.25) !important;
-    font-size: 0.9rem !important;
+    box-shadow: var(--shadow-blue) !important;
+    font-size: 0.88rem !important;
     text-transform: uppercase !important;
-    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    transition: all 0.2s ease !important;
 }
 
 .stDownloadButton > button:hover {
-    box-shadow: 0 8px 35px rgba(212,175,55,0.4) !important;
+    box-shadow: var(--shadow-blue-lg) !important;
     transform: translateY(-2px) !important;
-    filter: brightness(1.1) !important;
+    filter: brightness(1.08) !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -585,10 +580,11 @@ p, span, li, label, div {
    ══════════════════════════════════════════════════════════════ */
 [data-testid="stDataEditor"],
 [data-testid="stDataFrame"] {
-    border: 1px solid var(--border-medium) !important;
+    border: 1px solid var(--border-light) !important;
     border-radius: var(--radius-md) !important;
     overflow: hidden !important;
-    box-shadow: var(--shadow-dark) !important;
+    box-shadow: var(--shadow-md) !important;
+    background: var(--bg-white) !important;
 }
 
 [data-testid="stDataEditor"] [role="gridcell"] {
@@ -600,11 +596,11 @@ p, span, li, label, div {
    ALERTS & EXPANDER
    ══════════════════════════════════════════════════════════════ */
 [data-testid="stExpander"] {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-medium) !important;
+    background: var(--bg-white) !important;
+    border: 1px solid var(--border-light) !important;
     border-radius: var(--radius-md) !important;
     overflow: hidden;
-    box-shadow: var(--shadow-gold-sm) !important;
+    box-shadow: var(--shadow-sm) !important;
 }
 
 [data-testid="stExpander"] summary {
@@ -614,7 +610,7 @@ p, span, li, label, div {
 }
 
 [data-testid="stExpander"] [data-testid="stExpanderDetails"] {
-    border-top: 1px solid var(--border-subtle) !important;
+    border-top: 1px solid var(--border-light) !important;
 }
 
 [data-testid="stAlert"] {
@@ -623,56 +619,51 @@ p, span, li, label, div {
     padding: 0.8rem 1rem !important;
     border-left-width: 3px !important;
     font-family: 'Inter', sans-serif !important;
-    background: var(--bg-elevated) !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
    PROGRESS BAR
    ══════════════════════════════════════════════════════════════ */
 .stProgress > div > div {
-    background: var(--gradient-gold) !important;
+    background: var(--gradient-blue) !important;
     border-radius: 100px !important;
-    box-shadow: 0 0 12px rgba(212,175,55,0.4) !important;
+    box-shadow: 0 0 10px rgba(37,99,235,0.3) !important;
 }
 
 .stProgress > div {
-    background: var(--bg-card) !important;
+    background: var(--gray-100) !important;
     border-radius: 100px !important;
-    border: 1px solid var(--border-subtle) !important;
+    border: 1px solid var(--border-light) !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
    DIVIDER
    ══════════════════════════════════════════════════════════════ */
 hr {
-    border-color: var(--border-subtle) !important;
+    border-color: var(--border-light) !important;
     margin: 2rem 0 !important;
 }
 
 /* ══════════════════════════════════════════════════════════════
    SUCCESS / INFO / WARNING / ERROR
    ══════════════════════════════════════════════════════════════ */
-[data-baseweb="notification"][kind="positive"],
 .element-container .stSuccess {
-    background: rgba(16,185,129,0.06) !important;
+    background: var(--accent-emerald-light) !important;
     border-left-color: var(--accent-emerald) !important;
 }
 
-[data-baseweb="notification"][kind="info"],
 .element-container .stInfo {
-    background: rgba(212,175,55,0.05) !important;
-    border-left-color: var(--gold-400) !important;
+    background: var(--blue-50) !important;
+    border-left-color: var(--blue-500) !important;
 }
 
-[data-baseweb="notification"][kind="warning"],
 .element-container .stWarning {
-    background: rgba(245,158,11,0.06) !important;
+    background: var(--accent-amber-light) !important;
     border-left-color: var(--accent-amber) !important;
 }
 
-[data-baseweb="notification"][kind="negative"],
 .element-container .stError {
-    background: rgba(239,68,68,0.06) !important;
+    background: var(--accent-red-light) !important;
     border-left-color: var(--accent-red) !important;
 }
 
@@ -694,58 +685,64 @@ hr {
 /* ══════════════════════════════════════════════════════════════
    ORNAMENTAL SEPARATORS
    ══════════════════════════════════════════════════════════════ */
-.gold-separator {
+.section-divider {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     margin: 2rem 0;
 }
 
-.gold-separator .line {
+.section-divider .line {
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-medium), transparent);
+    background: linear-gradient(90deg, transparent, var(--border-light), transparent);
 }
 
-.gold-separator .diamond {
-    width: 8px; height: 8px;
-    background: var(--gold-400);
-    transform: rotate(45deg);
-    opacity: 0.5;
+.section-divider .dot {
+    width: 6px; height: 6px;
+    background: var(--blue-300);
+    border-radius: 50%;
     flex-shrink: 0;
+    opacity: 0.6;
 }
 
 /* ══════════════════════════════════════════════════════════════
    CUSTOM FOOTER
    ══════════════════════════════════════════════════════════════ */
-.luxury-footer {
-    margin-top: 5rem;
-    padding: 2rem 0;
+.corp-footer {
+    margin-top: 4rem;
+    padding: 2rem 0 1rem 0;
     text-align: center;
     position: relative;
 }
 
-.luxury-footer::before {
+.corp-footer::before {
     content: '';
     position: absolute;
-    top: 0; left: 20%; right: 20%;
+    top: 0; left: 15%; right: 15%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-medium), transparent);
+    background: linear-gradient(90deg, transparent, var(--border-light), transparent);
 }
 
-.footer-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
+.footer-logo-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
     font-weight: 800;
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 0.5rem;
+    color: var(--blue-700);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.3rem;
 }
 
 .footer-sub {
     font-size: 0.7rem;
     color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+.footer-copy {
+    color: var(--gray-300);
+    font-size: 0.62rem;
+    margin-top: 0.6rem;
     letter-spacing: 0.06em;
 }
 
@@ -757,17 +754,18 @@ hr {
     align-items: center;
     gap: 12px;
     padding: 0.75rem 1.25rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
+    background: var(--bg-white);
+    border: 1px solid var(--border-light);
     border-radius: var(--radius-sm);
     margin: 0.5rem 0;
+    box-shadow: var(--shadow-xs);
 }
 
 .proc-icon {
     width: 32px; height: 32px;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(212,175,55,0.08);
-    border: 1px solid rgba(212,175,55,0.15);
+    background: var(--blue-50);
+    border: 1px solid var(--blue-100);
     border-radius: 6px;
     font-size: 14px;
     flex-shrink: 0;
@@ -797,7 +795,7 @@ hr {
 
 .table-label .bar {
     width: 3px; height: 16px;
-    background: var(--gradient-gold);
+    background: var(--gradient-blue);
     border-radius: 2px;
 }
 
@@ -810,13 +808,44 @@ hr {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   SHIELD / TRUST BADGE
+   ══════════════════════════════════════════════════════════════ */
+.trust-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0.6rem 1rem;
+    background: var(--gray-50);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    margin: 1rem 0 0.5rem 0;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    letter-spacing: 0.02em;
+}
+
+.trust-item .t-icon {
+    font-size: 13px;
+    color: var(--blue-500);
+}
+
+/* ══════════════════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
     .main .block-container { padding: 1rem !important; }
-    .hero-brand { font-size: 1.6rem !important; }
+    .hero-brand { font-size: 1.5rem !important; }
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .hero-content { padding: 1.5rem !important; }
+    .trust-bar { flex-direction: column; gap: 0.5rem; }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -827,36 +856,46 @@ hr {
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown(f"""
 <div class="hero-wrapper">
-    <div class="hero-gold-line"></div>
+    <div class="hero-blue-line"></div>
     <div class="hero-content">
         <div class="hero-mono-tag">
             <span class="tag-dot"></span>
-            MOTOR DE CORTE INDUSTRIAL · v3.0
+            SISTEMA EXPERTO DE CORTE INDUSTRIAL · v3.0
         </div>
         <div class="hero-title-line">
             <h1 class="hero-brand">
-                GABBIANI <span class="gold">MASTER AI</span>
+                GABBIANI <span class="blue">MASTER AI</span>
             </h1>
-            <span class="hero-edition">BLACK EDITION</span>
+            <span class="hero-edition">PRO</span>
         </div>
         <p class="hero-desc">
-            Sistema experto de extracción de despiece con inteligencia artificial y reglas de ingeniería inversa.
-            Análisis visual por Gemini 3.0 Flash · Optimización automática de corte.
+            Plataforma de extracción automática de despieces con inteligencia artificial y motor de reglas de ingeniería.
+            Análisis visual por Gemini 3.0 Flash · Validación experta · Exportación directa a optimizador.
         </p>
         <div class="hero-status-row">
             <div class="status-chip chip-online">
                 <span class="chip-dot green"></span>
-                Motor IA Activo
+                Sistema Operativo
             </div>
-            <div class="status-chip chip-gold">
-                <span class="chip-dot gold"></span>
+            <div class="status-chip chip-blue">
+                <span class="chip-dot blue"></span>
                 Gemini 3.0 Flash
             </div>
             <div class="status-chip chip-neutral">
-                ⏱ {datetime.now().strftime("%d/%m/%Y · %H:%M")}
+                🕐 {datetime.now().strftime("%d/%m/%Y · %H:%M")}
             </div>
         </div>
     </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ── TRUST BAR ────────────────────────────────────────────────────────────────
+st.markdown("""
+<div class="trust-bar">
+    <div class="trust-item"><span class="t-icon">🛡️</span> Procesamiento seguro</div>
+    <div class="trust-item"><span class="t-icon">🔒</span> Datos no almacenados</div>
+    <div class="trust-item"><span class="t-icon">✅</span> Validación por reglas de ingeniería</div>
+    <div class="trust-item"><span class="t-icon">📐</span> Precisión industrial</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -866,16 +905,16 @@ try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
 except Exception:
     st.markdown("""
-    <div style="background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.18);
+    <div style="background: #fee2e2; border: 1px solid #fecaca;
                 border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;
-                border-left: 3px solid #ef4444;">
-        <div style="font-size: 1.05rem; font-weight: 700; color: #fca5a5; margin-bottom: 0.4rem;">
+                border-left: 3px solid #dc2626;">
+        <div style="font-size: 1rem; font-weight: 700; color: #991b1b; margin-bottom: 0.4rem;">
             ⛔ Error Crítico de Configuración
         </div>
-        <div style="color: #a09882; font-size: 0.88rem;">
+        <div style="color: #475569; font-size: 0.88rem;">
             No se encontró la clave API en
-            <code style="background: rgba(212,175,55,0.08); padding: 2px 8px; border-radius: 4px;
-                         color: #d4af37; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
+            <code style="background: #f1f5f9; padding: 2px 8px; border-radius: 4px;
+                         color: #1e40af; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
             .streamlit/secrets.toml</code>
         </div>
     </div>
@@ -992,11 +1031,11 @@ class CerebroOperario:
 
             elif ancho < self.ANCHO_MINIMO_PINZA:
                 medida_real = ancho
-                notas += f" | !! RECORTAR A {medida_real} MANUAL !!"
+                notas += f" | ⚠ RECORTAR A {medida_real} MANUAL"
                 alertas.append(f"🚨 {nombre}: PINZAS! Ancho {medida_real} peligroso. Cortar tira ancha.")
 
             if largo > self.LARGO_MAXIMO_TABLERO:
-                alertas.append(f"🚛 {nombre}: Largo {largo}mm excede estándar.")
+                alertas.append(f"📏 {nombre}: Largo {largo}mm excede estándar.")
 
             p = {
                 "ID": id_unico,
@@ -1086,9 +1125,9 @@ if uploaded_file:
         with st.spinner(""):
             st.markdown("""
             <div class="proc-status">
-                <div class="proc-icon">⚡</div>
+                <div class="proc-icon">📄</div>
                 <div>
-                    <span class="proc-text-main">Analizando documento PDF</span>
+                    <span class="proc-text-main">Procesando documento PDF</span>
                     <span class="proc-text-sub">Extrayendo páginas a 200 DPI...</span>
                 </div>
             </div>
@@ -1101,26 +1140,26 @@ if uploaded_file:
     # ── KPI CARDS ────────────────────────────────────────────────────────────
     st.markdown(f"""
     <div class="kpi-grid">
-        <div class="kpi-card gold">
+        <div class="kpi-card blue">
             <div class="kpi-label">Documento</div>
-            <div class="kpi-value" style="font-size:0.95rem; word-break:break-all; font-weight:600;">
+            <div class="kpi-value" style="font-size:0.92rem; word-break:break-all; font-weight:600;">
                 {uploaded_file.name}
             </div>
             <div class="kpi-sub">Archivo cargado correctamente</div>
         </div>
-        <div class="kpi-card gold">
-            <div class="kpi-label">Páginas</div>
+        <div class="kpi-card blue">
+            <div class="kpi-label">Páginas Detectadas</div>
             <div class="kpi-value">{total_pages}</div>
-            <div class="kpi-sub">Páginas detectadas</div>
+            <div class="kpi-sub">Disponibles para análisis</div>
         </div>
         <div class="kpi-card neutral">
             <div class="kpi-label">Resolución</div>
             <div class="kpi-value">200<span class="kpi-unit">DPI</span></div>
-            <div class="kpi-sub">Calidad de análisis</div>
+            <div class="kpi-sub">Calidad de extracción</div>
         </div>
-        <div class="kpi-card gold">
+        <div class="kpi-card blue">
             <div class="kpi-label">Motor IA</div>
-            <div class="kpi-value" style="font-size:0.95rem;">Gemini 3.0</div>
+            <div class="kpi-value" style="font-size:0.92rem;">Gemini 3.0</div>
             <div class="kpi-sub">Flash Preview</div>
         </div>
     </div>
@@ -1129,7 +1168,7 @@ if uploaded_file:
     # ── SECCIÓN: PÁGINAS ─────────────────────────────────────────────────────
     st.markdown(f"""
     <div class="sec-header">
-        <div class="sec-icon">📄</div>
+        <div class="sec-icon">📑</div>
         <div class="sec-text">
             <div class="sec-title">Selección de Páginas</div>
             <div class="sec-sub">Marca las páginas que contienen despieces o planos de corte</div>
@@ -1147,11 +1186,11 @@ if uploaded_file:
             if st.checkbox(f"Pág. {i+1}", value=True, key=f"chk_{i}"):
                 seleccionadas.append((i+1, img))
 
-    # ── SEPARADOR ORNAMENTAL ─────────────────────────────────────────────────
+    # ── SEPARADOR ────────────────────────────────────────────────────────────
     st.markdown("""
-    <div class="gold-separator">
+    <div class="section-divider">
         <div class="line"></div>
-        <div class="diamond"></div>
+        <div class="dot"></div>
         <div class="line"></div>
     </div>
     """, unsafe_allow_html=True)
@@ -1160,15 +1199,15 @@ if uploaded_file:
     col_btn, col_spacer, col_info = st.columns([2, 1, 3])
     with col_btn:
         procesar = st.button(
-            f"⚡  PROCESAR  ·  {len(seleccionadas)} PÁGINAS",
+            f"▶  ANALIZAR  ·  {len(seleccionadas)} PÁGINAS",
             type="primary",
             use_container_width=True
         )
     with col_info:
         st.markdown(f"""
         <div style="display:flex; align-items:center; padding:0.65rem 0;">
-            <span style="color: var(--text-muted); font-size:0.82rem;">
-                Tiempo estimado: <strong style="color: var(--gold-300);">~{len(seleccionadas) * 8}s</strong>
+            <span style="color: #94a3b8; font-size:0.82rem;">
+                Tiempo estimado: <strong style="color: #2563eb;">~{len(seleccionadas) * 8}s</strong>
                 &nbsp;·&nbsp; {len(seleccionadas)} de {total_pages} seleccionadas
             </span>
         </div>
@@ -1180,9 +1219,9 @@ if uploaded_file:
         cerebro = CerebroOperario()
 
         st.markdown("""
-        <div class="gold-separator">
+        <div class="section-divider">
             <div class="line"></div>
-            <div class="diamond"></div>
+            <div class="dot"></div>
             <div class="line"></div>
         </div>
         """, unsafe_allow_html=True)
@@ -1203,7 +1242,7 @@ if uploaded_file:
         for idx, (num_pag, img) in enumerate(seleccionadas):
             status.markdown(f"""
             <div class="proc-status">
-                <div class="proc-icon">👁️</div>
+                <div class="proc-icon">🔍</div>
                 <div>
                     <span class="proc-text-main">Analizando Página {num_pag}</span>
                     <span class="proc-text-sub">({idx+1} de {len(seleccionadas)})</span>
@@ -1226,10 +1265,10 @@ if uploaded_file:
             barra.progress((idx + 1) / len(seleccionadas))
 
         status.markdown("""
-        <div class="proc-status" style="border-color: rgba(16,185,129,0.2); background: rgba(16,185,129,0.04);">
-            <div class="proc-icon" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2);">✅</div>
+        <div class="proc-status" style="border-color: #a7f3d0; background: #ecfdf5;">
+            <div class="proc-icon" style="background: #d1fae5; border-color: #a7f3d0;">✅</div>
             <div>
-                <span class="proc-text-main" style="color: #6ee7b7;">Procesamiento completado</span>
+                <span class="proc-text-main" style="color: #065f46;">Procesamiento completado</span>
                 <span class="proc-text-sub">Todas las páginas analizadas correctamente</span>
             </div>
         </div>
@@ -1246,11 +1285,11 @@ if uploaded_file:
 if 'df_final' in st.session_state and not st.session_state['df_final'].empty:
 
     st.markdown("""
-    <div class="gold-separator">
+    <div class="section-divider">
         <div class="line"></div>
-        <div class="diamond"></div>
-        <div class="diamond" style="margin: 0 -8px;"></div>
-        <div class="diamond"></div>
+        <div class="dot"></div>
+        <div class="dot" style="margin: 0 -4px;"></div>
+        <div class="dot"></div>
         <div class="line"></div>
     </div>
     """, unsafe_allow_html=True)
@@ -1265,12 +1304,12 @@ if 'df_final' in st.session_state and not st.session_state['df_final'].empty:
     # ── HEADER RESULTADOS ────────────────────────────────────────────────────
     st.markdown(f"""
     <div class="sec-header">
-        <div class="sec-icon" style="background: rgba(212,175,55,0.1); border-color: rgba(212,175,55,0.2);">📋</div>
+        <div class="sec-icon">📋</div>
         <div class="sec-text">
             <div class="sec-title">Lista de Corte · Exportación WinCut</div>
             <div class="sec-sub">Resultado del análisis con reglas de ingeniería aplicadas</div>
         </div>
-        <div class="sec-badge" style="color: var(--accent-emerald); border-color: rgba(16,185,129,0.2); background: rgba(16,185,129,0.06);">
+        <div class="sec-badge" style="color: #059669; border-color: #a7f3d0; background: #ecfdf5;">
             ✓ LISTO
         </div>
     </div>
@@ -1284,12 +1323,12 @@ if 'df_final' in st.session_state and not st.session_state['df_final'].empty:
             <div class="kpi-value">{total_lineas}</div>
             <div class="kpi-sub">Registros únicos</div>
         </div>
-        <div class="kpi-card gold">
+        <div class="kpi-card blue">
             <div class="kpi-label">Total Piezas</div>
             <div class="kpi-value">{total_piezas}</div>
             <div class="kpi-sub">Sumando cantidades</div>
         </div>
-        <div class="kpi-card gold">
+        <div class="kpi-card blue">
             <div class="kpi-label">Materiales</div>
             <div class="kpi-value">{materiales_unicos}</div>
             <div class="kpi-sub">Tipos distintos</div>
@@ -1306,7 +1345,7 @@ if 'df_final' in st.session_state and not st.session_state['df_final'].empty:
     if alertas_list:
         st.markdown(f"""
         <div class="sec-header" style="margin-top:1.5rem;">
-            <div class="sec-icon" style="background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.15);">⚠️</div>
+            <div class="sec-icon" style="background: #fef3c7; border-color: #fde68a;">⚠️</div>
             <div class="sec-text">
                 <div class="sec-title">Informe de Ingeniería</div>
                 <div class="sec-sub">Alertas generadas por el motor de reglas experto</div>
@@ -1351,9 +1390,9 @@ if 'df_final' in st.session_state and not st.session_state['df_final'].empty:
 
     # ── SEPARADOR ────────────────────────────────────────────────────────────
     st.markdown("""
-    <div class="gold-separator">
+    <div class="section-divider">
         <div class="line"></div>
-        <div class="diamond"></div>
+        <div class="dot"></div>
         <div class="line"></div>
     </div>
     """, unsafe_allow_html=True)
@@ -1374,9 +1413,9 @@ if 'df_final' in st.session_state and not st.session_state['df_final'].empty:
     with col_dl_info:
         st.markdown(f"""
         <div style="display:flex; align-items:center; padding:0.7rem 0;">
-            <span style="color: var(--text-muted); font-size:0.8rem;">
-                Formato: <strong style="color: var(--gold-300);">CSV (;)</strong> &nbsp;·&nbsp;
-                Codificación: <strong style="color: var(--gold-300);">UTF-8</strong> &nbsp;·&nbsp;
+            <span style="color: #94a3b8; font-size:0.8rem;">
+                Formato: <strong style="color: #2563eb;">CSV (;)</strong> &nbsp;·&nbsp;
+                Codificación: <strong style="color: #2563eb;">UTF-8</strong> &nbsp;·&nbsp;
                 Compatible con WinCut, CutRite, Ardis
             </span>
         </div>
@@ -1387,12 +1426,12 @@ if 'df_final' in st.session_state and not st.session_state['df_final'].empty:
 # FOOTER
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
-<div class="luxury-footer">
-    <div class="footer-logo">GABBIANI MASTER AI</div>
+<div class="corp-footer">
+    <div class="footer-logo-text">GABBIANI MASTER AI</div>
     <div class="footer-sub">
-        Motor de Reglas v3.0 · Gemini 3.0 Flash Vision · Gold Edition
+        Motor de Reglas v3.0 · Gemini 3.0 Flash Vision · Edición Profesional
     </div>
-    <div style="color: #3d310e; font-size: 0.65rem; margin-top: 0.75rem; letter-spacing: 0.08em;">
+    <div class="footer-copy">
         © 2026 · SISTEMA EXPERTO DE OPTIMIZACIÓN DE CORTE INDUSTRIAL
     </div>
 </div>
