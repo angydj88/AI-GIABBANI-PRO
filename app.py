@@ -1359,7 +1359,7 @@ if uploaded_file:
 
             st.image(img, use_container_width=True)
 
-            if st.checkbox(f"Pág. {i+1}", key=f"chk_{i}"):
+            if st.checkbox("", key=f"chk_{i}"):
                 seleccionadas.append((i+1, img))
         
     # ── SEPARADOR ────────────────────────────────────────────────────────────
