@@ -933,6 +933,52 @@ hr {
     .hero-content { padding: 1.5rem !important; }
     .trust-bar { flex-direction: column; gap: 0.5rem; }
 }
+@media (max-width: 768px) {
+    .main .block-container { padding: 1rem !important; }
+    .hero-brand { font-size: 1.5rem !important; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-content { padding: 1.5rem !important; }
+    .trust-bar { flex-direction: column; gap: 0.5rem; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CAPTIONS DE IMAGEN Y LABELS DE CHECKBOX EN GRID DE PÁGINAS
+   ══════════════════════════════════════════════════════════════ */
+[data-testid="stImageCaption"],
+[data-testid="stCaptionContainer"] p,
+.stImage + div p,
+figcaption {
+    color: #1e293b !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    letter-spacing: 0.03em !important;
+    background: #dbeafe !important;
+    border: 1px solid #bfdbfe !important;
+    border-radius: 6px !important;
+    padding: 3px 8px !important;
+    margin-top: 4px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+[data-testid="stCheckbox"] > label > div > p,
+[data-testid="stCheckbox"] label p,
+[data-testid="stCheckbox"] label span {
+    color: #1e40af !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+}
+
+[data-testid="stCheckbox"]:has(input:checked) label p,
+[data-testid="stCheckbox"]:has(input:checked) label span {
+    color: #1d4ed8 !important;
+}
+
+[data-testid="stCheckbox"]:has(input:not(:checked)) label p,
+[data-testid="stCheckbox"]:has(input:not(:checked)) label span {
+    color: #64748b !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -1285,13 +1331,34 @@ if uploaded_file:
 
     st.markdown("<div style='margin-top: 0.75rem;'></div>", unsafe_allow_html=True)
 
-    # ── GRID DE PÁGINAS ───────────────────────────────────────────────────────
+        # ── GRID DE PÁGINAS ───────────────────────────────────────────────────────
     seleccionadas = []
 
     cols = st.columns(6)
     for i, img in enumerate(imgs):
         with cols[i % 6]:
-            st.image(img, caption=f"Página {i+1}", use_container_width=True)
+            st.markdown(f"""
+            <div style="
+                text-align: center;
+                margin-bottom: 4px;
+            ">
+                <span style="
+                    display: inline-block;
+                    background: #dbeafe;
+                    border: 1px solid #93c5fd;
+                    border-radius: 6px;
+                    padding: 2px 10px;
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 0.72rem;
+                    font-weight: 700;
+                    color: #1e3a8a;
+                    letter-spacing: 0.05em;
+                ">PÁG · {i+1:02d}</span>
+            </div>
+            """, unsafe_allow_html=True)
+
+            st.image(img, use_container_width=True)
+
             if st.checkbox(f"Pág. {i+1}", key=f"chk_{i}"):
                 seleccionadas.append((i+1, img))
         
