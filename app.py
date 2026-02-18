@@ -1041,17 +1041,14 @@ class CerebroOperario:
         if not datos_crudos:
             return [], []
 
-        for pieza in datos_crudos:
+              for pieza in datos_crudos:
             id_unico = f"P{numero_pagina}_{pieza.get('id', 'X')}"
             nombre = pieza.get("nombre", "Sin Nombre")
             notas = str(pieza.get("notas", "")).upper()
             material_raw = pieza.get("material", "")
-
             if any(x in nombre.upper() for x in self.LISTA_NEGRA) or any(x in material_raw.upper() for x in self.LISTA_NEGRA):
                 continue
-
             material = self.normalizar_material(material_raw)
-
             try:
                 largo = float(pieza.get("largo", 0))
                 ancho = float(pieza.get("ancho", 0))
@@ -1060,14 +1057,19 @@ class CerebroOperario:
             except:
                 largo, ancho, espesor, cantidad = 0, 0, 19, 1
 
+            # --- NUEVA REGLA: FILTRO ANTIFANTASMAS (0x0) ---
+            # Si la IA leyó el nombre pero no encontró medidas, ignoramos la línea.
+            if largo == 0 and ancho == 0:
+                # Opcional: Si quieres saber qué ignoró, descomenta el print
+                # print(f"   👻 Fantasma ignorado: {nombre}")
+                continue
+
             l_txt, a_txt = self.extraer_medidas_texto(nombre + " " + notas)
             if l_txt and (largo == 0 or abs(largo - l_txt) > 50):
                 largo, ancho = l_txt, a_txt
                 notas += " | MEDIDA DE TEXTO"
-
             if largo < ancho:
                 largo, ancho = ancho, largo
-
             if "PEGAR" in notas or "DOBLE" in notas or "APLACAR" in notas or "SANDWICH" in notas:
                 largo += self.MARGEN_SANEADO
                 ancho += self.MARGEN_SANEADO
