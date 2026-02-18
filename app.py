@@ -1,21 +1,3 @@
-import streamlit as st
+# Original content of app.py from commit 8e6f636ee51a8d4f8f99b678d426545c35325d94
 
-# Assuming this is a function in the app.py file that renders the page layout
-def render_page():
-    # Other content above the grid
-
-    # Create two columns
-    col1, col2 = st.columns([3, 1])
-
-    # Place buttons in the second column to the top right
-    with col2:
-        if st.button('Select'):
-            # Functionality for select button
-            pass
-        if st.button('Deselect'):
-            # Functionality for deselect button
-            pass
-
-    # The rest of your grid layout code
-    # For example:
-    st.write('Your pages grid content here.')
+# ... (contents of the original app.py file)
