@@ -1239,27 +1239,123 @@ if uploaded_file:
     </div>
     """, unsafe_allow_html=True)
 
-    # ── SECCIÓN: PÁGINAS ─────────────────────────────────────────────────────
-    st.markdown(f"""
-    <div class="sec-header">
-        <div class="sec-icon">📑</div>
-        <div class="sec-text">
-            <div class="sec-title">Selección de Páginas</div>
-            <div class="sec-sub">Marca las páginas que contienen despieces o planos de corte</div>
-        </div>
-        <div class="sec-badge">{total_pages} PÁG</div>
-    </div>
-    """, unsafe_allow_html=True)
+    class CerebroOperario:
+    def __init__(self):
+        self.ANCHO_MINIMO_PINZA = 70
+        self.ANCHO_SEGURIDAD = 130
+        self.LARGO_MAXIMO_TABLERO = 2850
+        self.MARGEN_SANEADO = 60
+        self.MARGEN_CNC = 10
+        self.DESCUENTO_QUBE = 59
+        self.LISTA_NEGRA = ["PINO", "PINTURA", "CANTO", "TORNILLO", "HERRAJE", "PERFIL LED", "CATALIZADOR"]
 
-    seleccionadas = []
+    def normalizar_material(self, texto):
+        mat = str(texto).upper()
+        if "KRION" in mat: return "KRION (🛑 CORTE ESPECIAL)"
+        if "ALUMINIO" in mat or "METAL" in mat or "ACERO" in mat: return "METAL (🛑 NO CORTAR)"
+        if "BLANCO" in mat or "CAOLIN" in mat or "W980" in mat or "WHITE" in mat: return "W980"
+        if "ELEGANCE" in mat or "M6317" in mat or "ROBLE" in mat or "OAK" in mat: return "M6317"
+        if "FONDO" in mat or "OCULTO" in mat or "BACK" in mat: return "16 B"
+        return texto
 
-    cols = st.columns(6)
-    for i, img in enumerate(imgs):
-        with cols[i % 6]:
-            st.image(img, caption=f"Página {i+1}", use_container_width=True)
-            if st.checkbox(f"Pág. {i+1}", value=True, key=f"chk_{i}"):
-                seleccionadas.append((i+1, img))
+    def extraer_medidas_texto(self, texto):
+        patron = r'(\d{3,4})\s*[xX]\s*(\d{3,4})'
+        match = re.search(patron, texto)
+        if match:
+            return float(match.group(1)), float(match.group(2))
+        return None, None
 
+    def procesar_pagina(self, datos_crudos, numero_pagina):
+        lista_final = []
+        alertas = []
+        if not datos_crudos:
+            return [], []
+        for pieza in datos_crudos:
+            id_unico = f"P{numero_pagina}_{pieza.get('id', 'X')}"
+            nombre = pieza.get("nombre", "Sin Nombre")
+            notas = str(pieza.get("notas", "")).upper()
+            material_raw = pieza.get("material", "")
+            if any(x in nombre.upper() for x in self.LISTA_NEGRA) or any(x in material_raw.upper() for x in self.LISTA_NEGRA):
+                continue
+            material = self.normalizar_material(material_raw)
+            try:
+                largo = float(pieza.get("largo", 0))
+                ancho = float(pieza.get("ancho", 0))
+                espesor = float(pieza.get("espesor", 19))
+                cantidad = int(pieza.get("cantidad", 1))
+            except:
+                largo, ancho, espesor, cantidad = 0, 0, 19, 1
+
+            if largo == 0 and ancho == 0:
+                continue
+
+            l_txt, a_txt = self.extraer_medidas_texto(nombre + " " + notas)
+            if l_txt and (largo == 0 or abs(largo - l_txt) > 50):
+                largo, ancho = l_txt, a_txt
+                notas += " | MEDIDA DE TEXTO"
+            if largo < ancho:
+                largo, ancho = ancho, largo
+            if "PEGAR" in notas or "DOBLE" in notas or "APLACAR" in notas or "SANDWICH" in notas:
+                largo += self.MARGEN_SANEADO
+                ancho += self.MARGEN_SANEADO
+                notas += f" | SANEADO +{self.MARGEN_SANEADO}mm"
+                if "DOBLE" in notas or "19+19" in notas:
+                    if cantidad == 1:
+                        cantidad *= 2
+                        notas += " | CANTIDAD x2 (Sándwich)"
+                alertas.append(f"🥪 {nombre}: Sándwich detectado.")
+            if "CAJÓN" in nombre.upper() or "CAJON" in nombre.upper():
+                if "QUBE" in notas:
+                    largo_fondo = 280 if "300" in notas else 480
+                    ancho_fondo = largo - self.DESCUENTO_QUBE
+                    p_fondo = {
+                        "ID": f"{id_unico}_FONDO",
+                        "Nombre": f"Fondo {nombre}",
+                        "Largo": ancho_fondo,
+                        "Ancho": largo_fondo,
+                        "Espesor": 16,
+                        "Material": "16 B",
+                        "Cantidad": cantidad,
+                        "Notas": "GENERADO AUTO: Fondo Qube"
+                    }
+                    lista_final.append(p_fondo)
+                    alertas.append(f"✨ {nombre}: Despiece Fondo Qube generado.")
+                    nombre = f"Frente {nombre}"
+            es_curva = "R" in notas or "RADIO" in notas or "CURVA" in notas
+            if es_curva:
+                largo += self.MARGEN_CNC
+                ancho += self.MARGEN_CNC
+                notas += f" | MARGEN CNC +{self.MARGEN_CNC}mm"
+                alertas.append(f"🔧 {nombre}: Forma curva -> Margen CNC.")
+            elif "Ø" in notas or "MECANIZADO" in notas:
+                notas += " | PASAR A CNC (Taladros)"
+            if "CIERRE" in nombre.upper() or "PERFIL" in notas or "INGLETE" in notas:
+                if ancho < 150:
+                    notas += " | CORTE BRUTO PERFIL"
+            if ancho < 50 and cantidad >= 2 and cantidad % 2 == 0:
+                ancho = self.ANCHO_SEGURIDAD
+                cantidad = int(cantidad / 2)
+                notas += " | OPTIMIZACIÓN 2x1 (Sacar 2 tiras)"
+                alertas.append(f"✂️ {nombre}: Optimización 2x1 aplicada.")
+            elif ancho < self.ANCHO_MINIMO_PINZA:
+                medida_real = ancho
+                notas += f" | ⚠ RECORTAR A {medida_real} MANUAL"
+                alertas.append(f"🚨 {nombre}: PINZAS! Ancho {medida_real} peligroso. Cortar tira ancha.")
+            if largo > self.LARGO_MAXIMO_TABLERO:
+                alertas.append(f"📏 {nombre}: Largo {largo}mm excede estándar.")
+            p = {
+                "ID": id_unico,
+                "Nombre": nombre,
+                "Largo": largo,
+                "Ancho": ancho,
+                "Espesor": espesor,
+                "Material": material,
+                "Cantidad": cantidad,
+                "Notas": notas
+            }
+            lista_final.append(p)
+        return lista_final, alertas
+        
     # ── SEPARADOR ────────────────────────────────────────────────────────────
     st.markdown("""
     <div class="section-divider">
