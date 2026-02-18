@@ -1035,7 +1035,7 @@ class CerebroOperario:
             return float(match.group(1)), float(match.group(2))
         return None, None
 
-        def procesar_pagina(self, datos_crudos, numero_pagina):
+    def procesar_pagina(self, datos_crudos, numero_pagina):
         lista_final = []
         alertas = []
         if not datos_crudos:
@@ -1056,11 +1056,7 @@ class CerebroOperario:
             except:
                 largo, ancho, espesor, cantidad = 0, 0, 19, 1
 
-            # --- NUEVA REGLA: FILTRO ANTIFANTASMAS (0x0) ---
-            # Si la IA leyó el nombre pero no encontró medidas, ignoramos la línea.
             if largo == 0 and ancho == 0:
-                # Opcional: Si quieres saber qué ignoró, descomenta el print
-                # print(f"   👻 Fantasma ignorado: {nombre}")
                 continue
 
             l_txt, a_txt = self.extraer_medidas_texto(nombre + " " + notas)
