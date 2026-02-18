@@ -1,33 +1,21 @@
-# Updated app.py
+import streamlit as st
 
-# Code to reposition select/deselect buttons to the top right of the pages grid section
+# Assuming this is a function in the app.py file that renders the page layout
+def render_page():
+    # Other content above the grid
 
-# Assuming you have a function similar to this in your app.py
+    # Create two columns
+    col1, col2 = st.columns([3, 1])
 
-class PageGrid:
-    def __init__(self):
-        self.create_interface()
+    # Place buttons in the second column to the top right
+    with col2:
+        if st.button('Select'):
+            # Functionality for select button
+            pass
+        if st.button('Deselect'):
+            # Functionality for deselect button
+            pass
 
-    def create_interface(self):
-        # Previous layout code...
-
-        # Repositioning buttons here
-        self.button_container = tk.Frame(self.root)
-        self.button_container.pack(side='top', anchor='ne')  # Top right position
-
-        self.select_button = tk.Button(self.button_container, text='Select', command=self.select)
-        self.deselect_button = tk.Button(self.button_container, text='Deselect', command=self.deselect)
-
-        # Pack buttons to the button container
-        self.select_button.pack(side='left')
-        self.deselect_button.pack(side='left')
-
-        # Continue with the rest of the interface...
-
-    def select(self):
-        # Logic for selecting
-        pass
-
-    def deselect(self):
-        # Logic for deselecting
-        pass
+    # The rest of your grid layout code
+    # For example:
+    st.write('Your pages grid content here.')
