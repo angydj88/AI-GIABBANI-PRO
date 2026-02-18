@@ -1285,7 +1285,7 @@ if uploaded_file:
     </div>
     """, unsafe_allow_html=True)
 
-        # ── SECCIÓN: PÁGINAS ─────────────────────────────────────────────────────
+            # ── SECCIÓN: PÁGINAS ─────────────────────────────────────────────────────
     st.markdown(f"""
     <div class="sec-header">
         <div class="sec-icon">📑</div>
@@ -1302,24 +1302,12 @@ if uploaded_file:
         if f"chk_{i}" not in st.session_state:
             st.session_state[f"chk_{i}"] = True
 
-    # ── BOTONES SELECCIONAR / DESELECCIONAR TODO ──────────────────────────────
-    col_sel, col_desel, col_info_sel = st.columns([1, 1, 4])
+    # ── BOTÓN TOGGLE ARRIBA A LA DERECHA ─────────────────────────────────────
+    activas = sum(1 for i in range(total_pages) if st.session_state.get(f"chk_{i}", True))
+    todas_activas = activas == total_pages
 
-    with col_sel:
-        if st.button("☑  Seleccionar todas", use_container_width=True):
-            for i in range(total_pages):
-                st.session_state[f"chk_{i}"] = True
-            st.rerun()
-
-    with col_desel:
-        if st.button("☐  Deseleccionar todas", use_container_width=True):
-            for i in range(total_pages):
-                st.session_state[f"chk_{i}"] = False
-            st.rerun()
-
+    col_info_sel, col_toggle = st.columns([5, 1])
     with col_info_sel:
-        # Contar cuántas están activas para mostrar el contador en tiempo real
-        activas = sum(1 for i in range(total_pages) if st.session_state.get(f"chk_{i}", True))
         st.markdown(f"""
         <div style="display:flex; align-items:center; height:100%; padding: 0.4rem 0;">
             <span style="color: #94a3b8; font-size:0.82rem;">
@@ -1328,38 +1316,51 @@ if uploaded_file:
             </span>
         </div>
         """, unsafe_allow_html=True)
+    with col_toggle:
+        label_btn = "☐ Deseleccionar todas" if todas_activas else "☑ Seleccionar todas"
+        if st.button(label_btn, use_container_width=True):
+            nuevo_estado = not todas_activas
+            for i in range(total_pages):
+                st.session_state[f"chk_{i}"] = nuevo_estado
+            st.rerun()
 
     st.markdown("<div style='margin-top: 0.75rem;'></div>", unsafe_allow_html=True)
 
-        # ── GRID DE PÁGINAS ───────────────────────────────────────────────────────
+    # ── GRID DE PÁGINAS ───────────────────────────────────────────────────────
     seleccionadas = []
 
     cols = st.columns(6)
     for i, img in enumerate(imgs):
         with cols[i % 6]:
-            st.markdown(f"""
-            <div style="
-                text-align: center;
-                margin-bottom: 4px;
-            ">
-                <span style="
-                    display: inline-block;
-                    background: #dbeafe;
-                    border: 1px solid #93c5fd;
-                    border-radius: 6px;
-                    padding: 2px 10px;
-                    font-family: 'JetBrains Mono', monospace;
-                    font-size: 0.72rem;
-                    font-weight: 700;
-                    color: #1e3a8a;
-                    letter-spacing: 0.05em;
-                ">PÁG · {i+1:02d}</span>
-            </div>
-            """, unsafe_allow_html=True)
+            chk_col, label_col = st.columns([1, 3])
+            with chk_col:
+                marcado = st.checkbox("", key=f"chk_{i}")
+            with label_col:
+                st.markdown(f"""
+                <div style="
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                    padding-top: 2px;
+                ">
+                    <span style="
+                        display: inline-block;
+                        background: #dbeafe;
+                        border: 1px solid #93c5fd;
+                        border-radius: 6px;
+                        padding: 2px 10px;
+                        font-family: 'JetBrains Mono', monospace;
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        color: #1e3a8a;
+                        letter-spacing: 0.05em;
+                    ">PÁG · {i+1:02d}</span>
+                </div>
+                """, unsafe_allow_html=True)
 
             st.image(img, use_container_width=True)
 
-            if st.checkbox("", key=f"chk_{i}"):
+            if marcado:
                 seleccionadas.append((i+1, img))
         
     # ── SEPARADOR ────────────────────────────────────────────────────────────
