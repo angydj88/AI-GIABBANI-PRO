@@ -1174,8 +1174,7 @@ class CerebroOperario:
 
 # --- 3. EL OJO DE LA IA (GEMINI 3 FLASH) ---
 def analizar_imagen_con_ia(imagen):
-    genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel("gemini-3-flash-preview")
+    client = genai.Client(api_key=API_KEY)
 
     prompt = """
     Eres un Técnico de Oficina Técnica. Extrae datos para fabricación.
@@ -1195,12 +1194,29 @@ def analizar_imagen_con_ia(imagen):
     ]
     """
     try:
-        response = model.generate_content([prompt, imagen])
+        # Convertir PIL Image a bytes
+        buffer = io.BytesIO()
+        imagen.save(buffer, format="PNG")
+        buffer.seek(0)
+
+        response = client.models.generate_content(
+            model="gemini-3-flash-preview",
+            contents=[
+                prompt,
+                {
+                    "inline_data": {
+                        "mime_type": "image/png",
+                        "data": buffer.getvalue()
+                    }
+                }
+            ]
+        )
         texto = response.text.replace("```json", "").replace("```", "").strip()
         return json.loads(texto)
+    except json.JSONDecodeError as e:
+        return {"error": f"JSON inválido: {str(e)} · Respuesta: {response.text[:200]}"}
     except Exception as e:
         return {"error": str(e)}
-
 
 # --- 4. UTILIDADES PDF ---
 def pdf_a_imagenes(archivo_pdf):
