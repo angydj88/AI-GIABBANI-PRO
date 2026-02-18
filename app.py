@@ -1035,13 +1035,12 @@ class CerebroOperario:
             return float(match.group(1)), float(match.group(2))
         return None, None
 
-    def procesar_pagina(self, datos_crudos, numero_pagina):
+        def procesar_pagina(self, datos_crudos, numero_pagina):
         lista_final = []
         alertas = []
         if not datos_crudos:
             return [], []
-
-              for pieza in datos_crudos:
+        for pieza in datos_crudos:
             id_unico = f"P{numero_pagina}_{pieza.get('id', 'X')}"
             nombre = pieza.get("nombre", "Sin Nombre")
             notas = str(pieza.get("notas", "")).upper()
@@ -1079,7 +1078,6 @@ class CerebroOperario:
                         cantidad *= 2
                         notas += " | CANTIDAD x2 (Sándwich)"
                 alertas.append(f"🥪 {nombre}: Sándwich detectado.")
-
             if "CAJÓN" in nombre.upper() or "CAJON" in nombre.upper():
                 if "QUBE" in notas:
                     largo_fondo = 280 if "300" in notas else 480
@@ -1097,7 +1095,6 @@ class CerebroOperario:
                     lista_final.append(p_fondo)
                     alertas.append(f"✨ {nombre}: Despiece Fondo Qube generado.")
                     nombre = f"Frente {nombre}"
-
             es_curva = "R" in notas or "RADIO" in notas or "CURVA" in notas
             if es_curva:
                 largo += self.MARGEN_CNC
@@ -1106,25 +1103,20 @@ class CerebroOperario:
                 alertas.append(f"🔧 {nombre}: Forma curva -> Margen CNC.")
             elif "Ø" in notas or "MECANIZADO" in notas:
                 notas += " | PASAR A CNC (Taladros)"
-
             if "CIERRE" in nombre.upper() or "PERFIL" in notas or "INGLETE" in notas:
                 if ancho < 150:
                     notas += " | CORTE BRUTO PERFIL"
-
             if ancho < 50 and cantidad >= 2 and cantidad % 2 == 0:
                 ancho = self.ANCHO_SEGURIDAD
                 cantidad = int(cantidad / 2)
                 notas += " | OPTIMIZACIÓN 2x1 (Sacar 2 tiras)"
                 alertas.append(f"✂️ {nombre}: Optimización 2x1 aplicada.")
-
             elif ancho < self.ANCHO_MINIMO_PINZA:
                 medida_real = ancho
                 notas += f" | ⚠ RECORTAR A {medida_real} MANUAL"
                 alertas.append(f"🚨 {nombre}: PINZAS! Ancho {medida_real} peligroso. Cortar tira ancha.")
-
             if largo > self.LARGO_MAXIMO_TABLERO:
                 alertas.append(f"📏 {nombre}: Largo {largo}mm excede estándar.")
-
             p = {
                 "ID": id_unico,
                 "Nombre": nombre,
@@ -1136,9 +1128,7 @@ class CerebroOperario:
                 "Notas": notas
             }
             lista_final.append(p)
-
         return lista_final, alertas
-
 
 # --- 3. EL OJO DE LA IA (GEMINI 3 FLASH) ---
 def analizar_imagen_con_ia(imagen):
