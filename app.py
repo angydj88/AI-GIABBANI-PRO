@@ -1175,7 +1175,7 @@ class CerebroOperario:
 # --- 3. EL OJO DE LA IA (GEMINI 3 FLASH) ---
 def analizar_imagen_con_ia(imagen):
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel("gemini-3-preview")
+    model = genai.GenerativeModel("gemini-3-flash-preview")
 
     prompt = """
     Eres un Técnico de Oficina Técnica. Extrae datos para fabricación.
