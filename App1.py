@@ -8,6 +8,9 @@ import json
 import re
 import os
 from datetime import datetime
+from google.oauth2 import service_account
+import vertexai
+from vertexai.generative_models import GenerativeModel, Part
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -571,25 +574,22 @@ st.markdown("""
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# API KEY
+# CONFIGURACIÓN VERTEX AI CON SERVICE ACCOUNT (obligatorio)
 # ══════════════════════════════════════════════════════════════════════════════
 try:
-    API_KEY = st.secrets["GEMINI_API_KEY"]
-    genai.configure(api_key=API_KEY)
-except Exception:
-    st.markdown("""
-    <div style="background: #fee2e2; border: 1px solid #fecaca;
-                border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;
-                border-left: 3px solid #dc2626;">
-        <div style="font-size: 1rem; font-weight: 700; color: #991b1b; margin-bottom: 0.4rem;">
-            ⛔ Error Crítico de Configuración
-        </div>
-        <div style="color: #475569; font-size: 0.88rem;">
-            No se encontró la clave API en
-            <code style="background: #f1f5f9; padding: 2px 8px; border-radius: 4px;
-                         color: #1e40af; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
-            .streamlit/secrets.toml</code>
-        </div>
+    credentials_info = dict(st.secrets["gcp_service_account"])
+    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+
+    vertexai.init(
+        project=st.secrets["GCP_PROJECT_ID"],
+        location=st.secrets["GCP_LOCATION"],
+        credentials=credentials
+    )
+except Exception as e:
+    st.markdown(f"""
+    <div style="background:#fee2e2;border:1px solid #fecaca;border-radius:12px;padding:1.5rem;margin:1.5rem 0;border-left:3px solid #dc2626;">
+        <div style="font-weight:700;color:#991b1b;">⛔ Fallo crítico de autenticación Vertex AI</div>
+        <div style="color:#475569;">{str(e)}</div>
     </div>
     """, unsafe_allow_html=True)
     st.stop()
@@ -737,43 +737,34 @@ class CerebroOperario:
 # 3. EL OJO DE LA IA (HÍBRIDO: VISIÓN + TEXTO VECTORIAL + FALLBACK JSON)
 # ══════════════════════════════════════════════════════════════════════════════
 def analizar_imagen_con_ia(imagen, texto_vectorial=""):
-    model = genai.GenerativeModel(MODELO_GEMINI)
-
+    model = GenerativeModel(MODELO_GEMINI)   # usa el modelo que tienes definido arriba
     bloque_vectorial = ""
     if texto_vectorial and texto_vectorial.strip():
         texto_truncado = texto_vectorial[:MAX_TEXTO_VECTORIAL]
         bloque_vectorial = f"""
-
     FUENTE SECUNDARIA — TEXTO VECTORIAL EXACTO DEL PDF:
     '''
     {texto_truncado}
     '''
     """
-
     prompt = f"""
     Eres Técnico de Oficina Técnica experto en despieces de mobiliario.
-
     {bloque_vectorial}
-
     REGLAS OBLIGATORIAS:
     - Si hay tabla con columnas ID / DESCRIPCION / UDS → extrae TODAS las filas.
     - Si hay cotas visibles → extrae largo y ancho.
     - Si no hay cotas pero sí tabla → devuelve largo=0, ancho=0 y en notas "MEDIDAS PENDIENTES - VER PLANO".
     - Nunca devuelvas lista vacía si hay piezas o tabla visible.
-
     Devuelve SOLO array JSON con:
     - id, nombre, largo, ancho, espesor, cantidad, material, notas
     """
-
     try:
         buffer = io.BytesIO()
         imagen.save(buffer, format="PNG")
         buffer.seek(0)
-        img_part = {"mime_type": "image/png", "data": buffer.getvalue()}
-
+        img_part = Part.from_data(data=buffer.getvalue(), mime_type="image/png")
         response = model.generate_content([prompt, img_part])
         texto_resp = response.text.replace("```json", "").replace("```", "").strip()
-
         try:
             return json.loads(texto_resp)
         except json.JSONDecodeError:
@@ -781,7 +772,6 @@ def analizar_imagen_con_ia(imagen, texto_vectorial=""):
             response_fix = model.generate_content(prompt_fix)
             texto_fix = response_fix.text.replace("```json", "").replace("```", "").strip()
             return json.loads(texto_fix)
-
     except Exception as e:
         return {"error": str(e)}
 
