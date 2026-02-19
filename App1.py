@@ -652,9 +652,7 @@ class CerebroOperario:
             except (ValueError, TypeError):
                 largo, ancho, espesor, cantidad = 0, 0, 19, 1
 
-            # FILTRO ANTIFANTASMAS: ignorar piezas sin medidas
-            if largo == 0 and ancho == 0:
-                continue
+
 
             # NORMALIZAR ORIENTACIÓN: largo siempre >= ancho
             if largo < ancho:
@@ -739,47 +737,32 @@ class CerebroOperario:
 # 3. EL OJO DE LA IA (HÍBRIDO: VISIÓN + TEXTO VECTORIAL + FALLBACK JSON)
 # ══════════════════════════════════════════════════════════════════════════════
 def analizar_imagen_con_ia(imagen, texto_vectorial=""):
-    """
-    Análisis híbrido: envía la imagen Y el texto vectorial extraído del PDF.
-    El texto vectorial da precisión numérica exacta; la imagen da contexto visual.
-    Incluye fallback de reparación JSON si la primera respuesta es inválida.
-    """
     model = genai.GenerativeModel(MODELO_GEMINI)
 
-    # Construir bloque de texto vectorial si existe
     bloque_vectorial = ""
     if texto_vectorial and texto_vectorial.strip():
         texto_truncado = texto_vectorial[:MAX_TEXTO_VECTORIAL]
         bloque_vectorial = f"""
 
     FUENTE SECUNDARIA — TEXTO VECTORIAL EXACTO DEL PDF:
-    (Este texto fue extraído digitalmente del PDF, los números son 100% fiables)
     '''
     {texto_truncado}
     '''
-    IMPORTANTE: Usa estos números como referencia exacta para medidas (largo/ancho).
-    Cruza con la imagen para determinar qué número corresponde a Largo y cuál a Ancho.
-    Si un nombre aparece ligeramente diferente en la imagen vs el texto, prioriza el texto vectorial.
     """
 
     prompt = f"""
     Eres Técnico de Oficina Técnica experto en despieces de mobiliario.
+
     {bloque_vectorial}
 
-    REGLA PRINCIPAL:
-    - Si la página contiene varias piezas o es vista general/conjunto → extrae SOLO nombres, códigos y cantidades. NO intentes adivinar medidas.
-    - Si la página muestra UNA sola pieza o grupo pequeño con cotas claras → extrae medidas exactas (largo y ancho de las cotas principales).
+    REGLAS OBLIGATORIAS:
+    - Si hay tabla con columnas ID / DESCRIPCION / UDS → extrae TODAS las filas.
+    - Si hay cotas visibles → extrae largo y ancho.
+    - Si no hay cotas pero sí tabla → devuelve largo=0, ancho=0 y en notas "MEDIDAS PENDIENTES - VER PLANO".
+    - Nunca devuelvas lista vacía si hay piezas o tabla visible.
 
-    Para cada pieza genera un objeto con:
-    - id = código o nombre corto
-    - nombre = descripción exacta
-    - largo y ancho = cotas reales más grandes (en mm)
-    - espesor = 19 si no se indica
-    - cantidad = número de unidades
-    - material = infiere del color o nota visible
-    - notas = cualquier texto adicional relevante
-
-    FORMATO: JSON array estricto. Devuelve SOLO el array, sin texto ni explicación.
+    Devuelve SOLO array JSON con:
+    - id, nombre, largo, ancho, espesor, cantidad, material, notas
     """
 
     try:
@@ -788,26 +771,17 @@ def analizar_imagen_con_ia(imagen, texto_vectorial=""):
         buffer.seek(0)
         img_part = {"mime_type": "image/png", "data": buffer.getvalue()}
 
-        # Primera llamada
         response = model.generate_content([prompt, img_part])
         texto_resp = response.text.replace("```json", "").replace("```", "").strip()
 
         try:
             return json.loads(texto_resp)
         except json.JSONDecodeError:
-            # FALLBACK: segunda llamada para reparar JSON roto
-            prompt_fix = f"""
-            El siguiente texto es la respuesta de un modelo que debía devolver JSON válido pero falló.
-            Corrígelo y devuelve SOLO el JSON válido, sin explicaciones, sin texto adicional, sin ```.
-            Texto roto:
-            {texto_resp}
-            """
+            prompt_fix = f"Corrige y devuelve SOLO el JSON array válido:\n{texto_resp}"
             response_fix = model.generate_content(prompt_fix)
             texto_fix = response_fix.text.replace("```json", "").replace("```", "").strip()
             return json.loads(texto_fix)
 
-    except json.JSONDecodeError as e:
-        return {"error": f"JSON inválido tras fallback: {str(e)}"}
     except Exception as e:
         return {"error": str(e)}
 
@@ -1126,9 +1100,10 @@ if 'df_final' in st.session_state:
     df = st.session_state['df_final']
     alertas_list = st.session_state.get('alertas_final', [])
 
-    if df.empty:
-        st.error("El análisis terminó pero no encontró piezas. Sube otro PDF o desactiva el filtro página 1.")
-    else:
+if df.empty:
+    st.warning("No se extrajeron medidas automáticas, pero se detectó listado de piezas. Revisa la tabla de nombres y cantidades.")
+else:
+    # el resto del código de KPI, alertas y tabla queda igual
         st.markdown("""
         <div class="section-divider">
             <div class="line"></div>
