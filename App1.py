@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # ══════════════════════════════════════════════════════════════════════════════
 # CONFIGURACIÓN GLOBAL
 # ══════════════════════════════════════════════════════════════════════════════
-MODELO_GEMINI = "gemini-2.0-flash"  # Cambiar si tienes acceso a otro modelo
+MODELO_GEMINI = "gemini-3-flash-preview"  # Cambiar si tienes acceso a otro modelo
 MAX_WORKERS = 4                      # Páginas procesadas simultáneamente
 MAX_TEXTO_VECTORIAL = 4000           # Caracteres máx de texto vectorial por página
 
