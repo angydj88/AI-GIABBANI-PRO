@@ -17,7 +17,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # ══════════════════════════════════════════════════════════════════════════════
 # Usamos el modelo Pro para máximo razonamiento.
 # Si tienes acceso al experimental 2.0, usa "gemini-2.0-pro-exp-02-05"
-MODELO_GEMINI = "gemini-3-pro-preview" 
+MODELO_GEMINI = "gemini-2.5-pro" 
 MAX_WORKERS = 5                      # Subimos a 5 hilos simultáneos
 MAX_TEXTO_VECTORIAL = 5000           # Más contexto para el modelo Pro
 
@@ -581,7 +581,7 @@ try:
 
     vertexai.init(
         project=st.secrets["GCP_PROJECT_ID"],
-        location="global"["GCP_LOCATION"],
+        location=st.secrets["GCP_LOCATION"],
         credentials=credentials
     )
 except Exception as e:
