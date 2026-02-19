@@ -1180,7 +1180,7 @@ def analizar_imagen_con_ia(imagen):
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel("gemini-3-flash-preview")
     
-    prompt = """
+    prompt_base= """
         Eres Técnico de Oficina Técnica experto en despieces de mobiliario.
 
         REGLA PRINCIPAL:
