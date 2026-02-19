@@ -1125,72 +1125,55 @@ if uploaded_file:
             st.session_state['df_final'] = pd.DataFrame(resultados_totales)
             st.session_state['alertas_final'] = alertas_totales
 
-    # ══════════════════════════════════════════════════════════════════════════
-    # PROCESAMIENTO CONCURRENTE
-    # ══════════════════════════════════════════════════════════════════════════
     if procesar and n_seleccionadas > 0:
-        # Construir lote de trabajo: (num_pagina, imagen, texto_vectorial)
         lote_trabajo = []
         for idx in seleccionadas_indices:
             img, txt = datos_pdf[idx]
             num_pag = idx + 1
             lote_trabajo.append((num_pag, img, txt))
 
-        # Aplicar filtro de páginas densas
         if ignorar_paginas_densas:
-            paginas_filtradas = [item for item in lote_trabajo if item[0] == 1]
             lote_trabajo = [item for item in lote_trabajo if item[0] > 1]
-            if paginas_filtradas:
-                st.info("ℹ️ Página 1 omitida por filtro de páginas densas.")
 
         if not lote_trabajo:
-            st.warning("⚠️ No quedan páginas para procesar tras aplicar los filtros.")
+            st.warning("⚠️ No quedan páginas tras filtros.")
         else:
-            st.markdown("""
-            <div class="section-divider">
-                <div class="line"></div><div class="dot"></div><div class="line"></div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("<div class='section-divider'><div class='line'></div><div class='dot'></div><div class='line'></div></div>", unsafe_allow_html=True)
 
-            st.markdown("""
-            <div class="sec-header">
-                <div class="sec-icon">🔬</div>
-                <div class="sec-text">
-                    <div class="sec-title">Procesamiento Híbrido Concurrente</div>
-                    <div class="sec-sub">Visión IA + Texto Vectorial · Reglas de ingeniería</div>
+            placeholder_status = st.empty()
+            barra = st.progress(0)
+            placeholder_status.markdown("""
+            <div class="proc-status">
+                <div class="proc-icon">🔄</div>
+                <div>
+                    <span class="proc-text-main">Iniciando análisis...</span>
+                    <span class="proc-text-sub">Llamadas concurrentes en curso</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
+            barra.progress(5)
 
-            barra = st.progress(0)
-            status = st.empty()
             cerebro = CerebroOperario()
-
             resultados_totales = []
             alertas_totales = []
             total_lote = len(lote_trabajo)
 
-            # ── Procesamiento con ThreadPoolExecutor ─────────────────────────
             with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-                futuros = {}
-                for item in lote_trabajo:
-                    futuro = executor.submit(_procesar_una_pagina, item)
-                    futuros[futuro] = item[0]  # mapear futuro → num_página
-
+                futuros = {executor.submit(_procesar_una_pagina, item): item[0] for item in lote_trabajo}
                 completados = 0
+
                 for futuro in as_completed(futuros):
                     completados += 1
                     num_pag_completada = futuros[futuro]
 
                     try:
                         num_pag_result, datos_ia = futuro.result()
-
-                        status.markdown(f"""
+                        placeholder_status.markdown(f"""
                         <div class="proc-status">
                             <div class="proc-icon">⚡</div>
                             <div>
                                 <span class="proc-text-main">Página {num_pag_result} procesada</span>
-                                <span class="proc-text-sub">({completados} de {total_lote} completadas)</span>
+                                <span class="proc-text-sub">({completados} de {total_lote})</span>
                             </div>
                         </div>
                         """, unsafe_allow_html=True)
@@ -1205,30 +1188,39 @@ if uploaded_file:
                     except Exception as e:
                         st.error(f"❌ Error en página {num_pag_completada}: {str(e)}")
 
-                    barra.progress(completados / total_lote)
+                    progreso = max(5, int((completados / total_lote) * 100))
+                    barra.progress(progreso)
 
-            # ── Ordenar resultados por ID (las páginas llegan desordenadas) ──
-            resultados_totales.sort(key=lambda x: x.get("ID", ""))
-
-            # ── Resultado final ──────────────────────────────────────────────
-            status.markdown("""
-            <div class="proc-status" style="border-color: #a7f3d0; background: #ecfdf5;">
-                <div class="proc-icon" style="background: #d1fae5; border-color: #a7f3d0;">✅</div>
+            placeholder_status.markdown("""
+            <div class="proc-status" style="border-color:#a7f3d0;background:#ecfdf5;">
+                <div class="proc-icon" style="background:#d1fae5;border-color:#a7f3d0;">✅</div>
                 <div>
-                    <span class="proc-text-main" style="color: #065f46;">Procesamiento completado</span>
-                    <span class="proc-text-sub">Todas las páginas analizadas y validadas</span>
+                    <span class="proc-text-main" style="color:#065f46;">Procesamiento completado</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
+            barra.progress(100)
 
+            resultados_totales.sort(key=lambda x: x.get("ID", ""))
             st.session_state['df_final'] = pd.DataFrame(resultados_totales)
             st.session_state['alertas_final'] = alertas_totales
+
+            if not resultados_totales:
+                st.warning("No se extrajeron piezas válidas. Desactiva el filtro de páginas densas y prueba otra vez.")
+            st.rerun()
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 7. RESULTADOS Y EXPORTACIÓN
 # ══════════════════════════════════════════════════════════════════════════════
-if 'df_final' in st.session_state and not st.session_state['df_final'].empty:
+if 'df_final' in st.session_state:
+    df = st.session_state['df_final']
+    alertas_list = st.session_state.get('alertas_final', [])
+
+    if df.empty:
+        st.error("El análisis terminó pero no encontró piezas. Sube otro PDF o desactiva el filtro página 1.")
+    else:
+        # todo el resto del bloque KPI, alertas, tabla y download queda igual
 
     st.markdown("""
     <div class="section-divider">
