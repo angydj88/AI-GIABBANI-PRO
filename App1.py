@@ -1100,10 +1100,9 @@ if 'df_final' in st.session_state:
     df = st.session_state['df_final']
     alertas_list = st.session_state.get('alertas_final', [])
 
-if df.empty:
-    st.warning("No se extrajeron medidas automáticas, pero se detectó listado de piezas. Revisa la tabla de nombres y cantidades.")
-else:
-    # el resto del código de KPI, alertas y tabla queda igual
+    if df.empty:
+        st.warning("No se extrajeron medidas automáticas, pero se detectó listado de piezas. Revisa la tabla de nombres y cantidades.")
+    else:
         st.markdown("""
         <div class="section-divider">
             <div class="line"></div>
@@ -1160,7 +1159,7 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-        # Panel de alertas (mantengo tu lógica original)
+        # Panel de alertas
         if alertas_list:
             st.markdown(f"""
             <div class="sec-header" style="margin-top:1.5rem;">
