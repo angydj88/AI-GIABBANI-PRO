@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+import vertexai
 from PIL import Image
 import pandas as pd
 import fitz  # PyMuPDF
@@ -9,7 +9,6 @@ import re
 import os
 from datetime import datetime
 from google.oauth2 import service_account
-import vertexai
 from vertexai.generative_models import GenerativeModel, Part
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
