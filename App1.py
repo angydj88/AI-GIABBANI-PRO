@@ -1148,27 +1148,27 @@ if 'df_final' in st.session_state:
         </div>
         """, unsafe_allow_html=True)
 
-        # Panel de alertas
-        if alertas_list:
-            st.markdown(f"""
-            <div class="sec-header" style="margin-top:1.5rem;">
-                <div class="sec-icon" style="background: #fef3c7; border-color: #fde68a;">⚠️</div>
-                <div class="sec-text">
-                    <div class="sec-title">Informe de Ingeniería</div>
-                    <div class="sec-sub">Alertas generadas por el motor de reglas experto</div>
-                </div>
-                <div class="sec-badge">{len(alertas_list)} AVISOS</div>
-            </div>
-            """, unsafe_allow_html=True)
+        # ── PANEL DE ALERTAS (VERSIÓN ESTABLE) ─────────────────────────────────────
+if alertas_list:
+    st.markdown(f"""
+    <div class="sec-header" style="margin-top:1.5rem;">
+        <div class="sec-icon" style="background: #fef3c7; border-color: #fde68a;">⚠️</div>
+        <div class="sec-text">
+            <div class="sec-title">Informe de Ingeniería</div>
+            <div class="sec-sub">Alertas generadas por el motor de reglas experto</div>
+        </div>
+        <div class="sec-badge">{len(alertas_list)} AVISOS</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-            with st.expander(f"Ver {len(alertas_list)} alertas del análisis", expanded=True):
-                for a in alertas_list:
-                    if "PINZAS" in a or "KRION" in a or "METAL" in a:
-                        st.error(a)
-                    elif "SÁNDWICH" in a.upper() or "DESCONOCIDO" in a:
-                        st.warning(a)
-                    else:
-                        st.info(a)
+    with st.expander(f"Ver {len(alertas_list)} alertas del análisis", expanded=True):
+        for a in alertas_list:
+            if "PINZAS" in a or "KRION" in a or "METAL" in a:
+                st.error(a)
+            elif "SÁNDWICH" in a.upper() or "DESCONOCIDO" in a:
+                st.warning(a)
+            else:
+                st.info(a)
 
         # Tabla editable
         st.markdown("""
