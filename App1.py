@@ -1148,8 +1148,8 @@ if 'df_final' in st.session_state:
         </div>
         """, unsafe_allow_html=True)
 
-        # ── PANEL DE ALERTAS (VERSIÓN ESTABLE) ─────────────────────────────────────
-if alertas_list:
+        # ── PANEL DE ALERTAS (VERSIÓN ESTABLE)
+        if alertas_list:
     st.markdown(f"""
     <div class="sec-header" style="margin-top:1.5rem;">
         <div class="sec-icon" style="background: #fef3c7; border-color: #fde68a;">⚠️</div>
