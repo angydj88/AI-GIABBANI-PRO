@@ -11,11 +11,13 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ══════════════════════════════════════════════════════════════════════════════
-# CONFIGURACIÓN GLOBAL
+# CONFIGURACIÓN GLOBAL (EDICIÓN PRO)
 # ══════════════════════════════════════════════════════════════════════════════
-MODELO_GEMINI = "gemini-3-flash-preview"  # Cambiar si tienes acceso a otro modelo
-MAX_WORKERS = 4                      # Páginas procesadas simultáneamente
-MAX_TEXTO_VECTORIAL = 4000           # Caracteres máx de texto vectorial por página
+# Usamos el modelo Pro para máximo razonamiento.
+# Si tienes acceso al experimental 2.0, usa "gemini-2.0-pro-exp-02-05"
+MODELO_GEMINI = "gemini-3-pro-preview" 
+MAX_WORKERS = 5                      # Subimos a 5 hilos simultáneos
+MAX_TEXTO_VECTORIAL = 5000           # Más contexto para el modelo Pro
 
 st.set_page_config(
     page_title="GABBIANI MASTER AI · Motor de Corte Industrial",
@@ -525,7 +527,7 @@ st.markdown(f"""
     <div class="hero-content">
         <div class="hero-mono-tag">
             <span class="tag-dot"></span>
-            SISTEMA EXPERTO DE CORTE INDUSTRIAL · v3.2 HÍBRIDO
+            SISTEMA EXPERTO DE CORTE INDUSTRIAL · v3.3 PRO
         </div>
         <div class="hero-title-line">
             <h1 class="hero-brand">
@@ -535,7 +537,7 @@ st.markdown(f"""
         </div>
         <p class="hero-desc">
             Extracción híbrida con doble fuente de verdad: Visión IA + Texto Vectorial del PDF.
-            Procesamiento concurrente multihilo · Validación experta · Exportación directa a optimizador.
+            Procesamiento concurrente multihilo (5x) · Validación experta · Exportación directa a optimizador.
         </p>
         <div class="hero-status-row">
             <div class="status-chip chip-online">
@@ -544,7 +546,7 @@ st.markdown(f"""
             </div>
             <div class="status-chip chip-blue">
                 <span class="chip-dot blue"></span>
-                {MODELO_GEMINI}
+                Gemini 3.0 Pro
             </div>
             <div class="status-chip chip-neutral">
                 🚀 Concurrencia: {MAX_WORKERS}x
@@ -920,7 +922,7 @@ if uploaded_file:
         </div>
         <div class="kpi-card blue">
             <div class="kpi-label">Motor</div>
-            <div class="kpi-value" style="font-size:0.85rem;">{MODELO_GEMINI}</div>
+            <div class="kpi-value" style="font-size:0.85rem;">Gemini 3.0 Pro</div>
             <div class="kpi-sub">Híbrido {MAX_WORKERS}x concurrente</div>
         </div>
     </div>
@@ -1291,10 +1293,10 @@ st.markdown("""
 <div class="corp-footer">
     <div class="footer-logo-text">GABBIANI MASTER AI</div>
     <div class="footer-sub">
-        Motor Híbrido v3.2 · Visión + Texto Vectorial · Concurrencia Multihilo · Edición Profesional
+        Motor Híbrido v3.3 PRO · Visión + Texto Vectorial · Concurrencia Multihilo · Edición Profesional
     </div>
     <div class="footer-copy">
-        © 2025 · SISTEMA EXPERTO DE OPTIMIZACIÓN DE CORTE INDUSTRIAL
+        © 2026 · SISTEMA EXPERTO DE OPTIMIZACIÓN DE CORTE INDUSTRIAL
     </div>
 </div>
 """, unsafe_allow_html=True)
