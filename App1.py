@@ -1122,78 +1122,78 @@ if 'df_final' in st.session_state:
         </div>
         """, unsafe_allow_html=True)
 
-        # KPI resultados
-        st.markdown(f"""
-        <div class="kpi-grid">
-            <div class="kpi-card emerald">
-                <div class="kpi-label">Líneas de Corte</div>
-                <div class="kpi-value">{total_lineas}</div>
-                <div class="kpi-sub">Registros únicos</div>
-            </div>
-            <div class="kpi-card blue">
-                <div class="kpi-label">Total Piezas</div>
-                <div class="kpi-value">{total_piezas}</div>
-                <div class="kpi-sub">Sumando cantidades</div>
-            </div>
-            <div class="kpi-card blue">
-                <div class="kpi-label">Materiales</div>
-                <div class="kpi-value">{materiales_unicos}</div>
-                <div class="kpi-sub">Tipos distintos</div>
-            </div>
-            <div class="kpi-card amber">
-                <div class="kpi-label">Alertas</div>
-                <div class="kpi-value">{len(alertas_list)}</div>
-                <div class="kpi-sub">Requieren revisión</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # ── PANEL DE ALERTAS (VERSIÓN ESTABLE)
-        if alertas_list:
+    # ── KPI RESULTADOS
     st.markdown(f"""
-    <div class="sec-header" style="margin-top:1.5rem;">
-        <div class="sec-icon" style="background: #fef3c7; border-color: #fde68a;">⚠️</div>
-        <div class="sec-text">
-            <div class="sec-title">Informe de Ingeniería</div>
-            <div class="sec-sub">Alertas generadas por el motor de reglas experto</div>
+    <div class="kpi-grid">
+        <div class="kpi-card emerald">
+            <div class="kpi-label">Líneas de Corte</div>
+            <div class="kpi-value">{total_lineas}</div>
+            <div class="kpi-sub">Registros únicos</div>
         </div>
-        <div class="sec-badge">{len(alertas_list)} AVISOS</div>
+        <div class="kpi-card blue">
+            <div class="kpi-label">Total Piezas</div>
+            <div class="kpi-value">{total_piezas}</div>
+            <div class="kpi-sub">Sumando cantidades</div>
+        </div>
+        <div class="kpi-card blue">
+            <div class="kpi-label">Materiales</div>
+            <div class="kpi-value">{materiales_unicos}</div>
+            <div class="kpi-sub">Tipos distintos</div>
+        </div>
+        <div class="kpi-card amber">
+            <div class="kpi-label">Alertas</div>
+            <div class="kpi-value">{len(alertas_list)}</div>
+            <div class="kpi-sub">Requieren revisión</div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    with st.expander(f"Ver {len(alertas_list)} alertas del análisis", expanded=True):
-        for a in alertas_list:
-            if "PINZAS" in a or "KRION" in a or "METAL" in a:
-                st.error(a)
-            elif "SÁNDWICH" in a.upper() or "DESCONOCIDO" in a:
-                st.warning(a)
-            else:
-                st.info(a)
-
-        # Tabla editable
-        st.markdown("""
-        <div class="table-label">
-            <div class="bar"></div>
-            <span>Tabla editable · Doble clic para modificar valores</span>
+    # ── PANEL DE ALERTAS (VERSIÓN ESTABLE Y LIMPIA) ───────────────────────────
+    if alertas_list:
+        st.markdown(f"""
+        <div class="sec-header" style="margin-top:1.5rem;">
+            <div class="sec-icon" style="background: #fef3c7; border-color: #fde68a;">⚠️</div>
+            <div class="sec-text">
+                <div class="sec-title">Informe de Ingeniería</div>
+                <div class="sec-sub">Alertas generadas por el motor de reglas experto</div>
+            </div>
+            <div class="sec-badge">{len(alertas_list)} AVISOS</div>
         </div>
         """, unsafe_allow_html=True)
 
-        df_editado = st.data_editor(
-            df,
-            num_rows="dynamic",
-            use_container_width=True,
-            height=600,
-            column_config={
-                "ID": st.column_config.TextColumn("ID", width="small"),
-                "Nombre": st.column_config.TextColumn("Nombre", width="medium"),
-                "Largo": st.column_config.NumberColumn("Largo", format="%.1f mm", width="small"),
-                "Ancho": st.column_config.NumberColumn("Ancho", format="%.1f mm", width="small"),
-                "Espesor": st.column_config.NumberColumn("Espesor", format="%.0f mm", width="small"),
-                "Material": st.column_config.TextColumn("Material", width="medium"),
-                "Cantidad": st.column_config.NumberColumn("Cant.", format="%d", width="small"),
-                "Notas": st.column_config.TextColumn("Notas", width="large"),
-            }
-        )
+        with st.expander(f"Ver {len(alertas_list)} alertas del análisis", expanded=True):
+            for a in alertas_list:
+                if "PINZAS" in a or "KRION" in a or "METAL" in a:
+                    st.error(a)
+                elif "SÁNDWICH" in a.upper() or "DESCONOCIDO" in a:
+                    st.warning(a)
+                else:
+                    st.info(a)
+
+    # ── TABLA EDITABLE ───────────────────────────────────────────────────────
+    st.markdown("""
+    <div class="table-label">
+        <div class="bar"></div>
+        <span>Tabla editable · Doble clic para modificar valores</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    df_editado = st.data_editor(
+        df,
+        num_rows="dynamic",
+        use_container_width=True,
+        height=600,
+        column_config={
+            "ID": st.column_config.TextColumn("ID", width="small"),
+            "Nombre": st.column_config.TextColumn("Nombre", width="medium"),
+            "Largo": st.column_config.NumberColumn("Largo", format="%.1f mm", width="small"),
+            "Ancho": st.column_config.NumberColumn("Ancho", format="%.1f mm", width="small"),
+            "Espesor": st.column_config.NumberColumn("Espesor", format="%.0f mm", width="small"),
+            "Material": st.column_config.TextColumn("Material", width="medium"),
+            "Cantidad": st.column_config.NumberColumn("Cant.", format="%d", width="small"),
+            "Notas": st.column_config.TextColumn("Notas", width="large"),
+        }
+    )
 
         # Exportación
         csv = df_editado.to_csv(index=False, sep=";").encode('utf-8')
