@@ -1180,22 +1180,24 @@ def analizar_imagen_con_ia(imagen):
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel("gemini-3-flash-preview")
     
-    prompt_base = """
-    Eres Técnico de Oficina Técnica experto en despieces de mobiliario baño y cocina. Analiza la imagen COMPLETA.
+    prompt = """
+        Eres Técnico de Oficina Técnica experto en despieces de mobiliario.
 
-    1. Localiza la tabla de partes (POS | Q.U. | CODICE PARTE | DESCRIZIONE | NOTE).
-    2. Extrae TODAS las filas sin excepción.
-    3. Para cada pieza:
-       - id = número POS o código parte
-       - nombre = DESCRIZIONE exacta
-       - largo y ancho = cotas reales o bounding box (prioriza números grandes)
-       - espesor = 19 si no se indica (estándar melamina)
-       - cantidad = Q.U.
-       - material = infiere del nombre o pon "MELAMINA 19mm"
-       - notas = cualquier texto adicional
+        REGLA PRINCIPAL:
+        - Si la página contiene varias piezas o es vista general/conjunto → extrae SOLO nombres, códigos y cantidades. NO intentes sacar medidas.
+        - Si la página muestra UNA sola pieza o grupo pequeño con cotas claras → extrae medidas exactas (largo y ancho de las cotas principales).
 
-    FORMATO JSON ESTRICTO. Devuelve solo el array. No omitas ninguna pieza.
-    """
+        Para cada pieza:
+        - id = código o nombre corto
+        - nombre = descripción exacta
+        - largo y ancho = cotas reales más grandes
+        - espesor = 19 si no se indica
+        - cantidad = número de unidades
+        - material = infiere del color o nota
+        - notas = cualquier texto adicional
+
+        FORMATO JSON ESTRICTO. Devuelve solo el array.
+        """
 
     try:
         buffer = io.BytesIO()
@@ -1386,6 +1388,12 @@ if uploaded_file:
 
             if marcado:
                 seleccionadas.append((i+1, img))
+                # Control inteligente de páginas densas (conjuntos)
+ignorar_paginas_densas = st.checkbox(
+    "🚫 Ignorar páginas densas / conjuntos / vistas generales",
+    value=True,
+    help="Activa siempre que la primera página sea plano general o tenga muchas piezas juntas"
+)
         
     # ── SEPARADOR ────────────────────────────────────────────────────────────
     st.markdown("""
@@ -1419,6 +1427,10 @@ if uploaded_file:
         alertas = []
         cerebro = CerebroOperario()
 
+        # APLICAR FILTRO DE PÁGINAS DENSAS
+        if ignorar_paginas_densas:
+            seleccionadas = [p for p in seleccionadas if p[0] > 1]
+            
         st.markdown("""
         <div class="section-divider">
             <div class="line"></div>
