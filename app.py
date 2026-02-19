@@ -1387,14 +1387,16 @@ if uploaded_file:
             st.image(img, use_container_width=True)
 
             if marcado:
+                            st.image(img, use_container_width=True)
+            if marcado:
                 seleccionadas.append((i+1, img))
-                
-                # Control inteligente de páginas densas (conjuntos)
-ignorar_paginas_densas = st.checkbox(
-    "🚫 Ignorar páginas densas / conjuntos / vistas generales",
-    value=True,
-    help="Activa siempre que la primera página sea plano general o tenga muchas piezas juntas"
-)
+
+    # ── CONTROL INTELIGENTE DE PÁGINAS DENSAS ─────────────────────────────────
+    ignorar_paginas_densas = st.checkbox(
+        "🚫 Ignorar páginas densas / conjuntos / vistas generales",
+        value=True,
+        help="Activa siempre que la primera página sea plano general o tenga muchas piezas juntas"
+    )
         
     # ── SEPARADOR ────────────────────────────────────────────────────────────
     st.markdown("""
