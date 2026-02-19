@@ -947,7 +947,7 @@ if uploaded_file:
         if f"chk_{i}" not in st.session_state:
             st.session_state[f"chk_{i}"] = True
 
-    # ── Botón seleccionar/deseleccionar todo ─────────────────────────────────
+    # ── Botón seleccionar/deseleccionar todo (versión móvil limpia) ─────────────────────────────────
     activas = sum(1 for i in range(total_pages) if st.session_state.get(f"chk_{i}", True))
     todas_activas = activas == total_pages
 
@@ -962,7 +962,7 @@ if uploaded_file:
         </div>
         """, unsafe_allow_html=True)
     with col_toggle:
-        label_btn = "☐ Deseleccionar todas" if todas_activas else "☑ Seleccionar todas"
+        label_btn = "☐ Todo" if todas_activas else "☑ Todo"
         if st.button(label_btn, use_container_width=True):
             nuevo_estado = not todas_activas
             for i in range(total_pages):
@@ -1001,12 +1001,7 @@ if uploaded_file:
             if marcado:
                 seleccionadas_indices.append(i)
 
-    # ── Filtro de páginas densas ─────────────────────────────────────────────
-    ignorar_paginas_densas = st.checkbox(
-        "🚫 Ignorar páginas densas / conjuntos / vistas generales (página 1)",
-        value=True,
-        help="Activa siempre que la primera página sea plano general o tenga muchas piezas juntas"
-    )
+    
 
     # ── SEPARADOR ────────────────────────────────────────────────────────────
     st.markdown("""
