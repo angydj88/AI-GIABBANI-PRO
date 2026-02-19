@@ -1013,7 +1013,7 @@ if uploaded_file:
     """, unsafe_allow_html=True)
 
     # ══════════════════════════════════════════════════════════════════════════
-    # BOTÓN PROCESAR + FEEDBACK INMEDIATO
+    # BOTÓN PROCESAR + FEEDBACK INMEDIATO (VERSIÓN LIMPIA SIN FILTRO)
     # ══════════════════════════════════════════════════════════════════════════
     n_seleccionadas = len(seleccionadas_indices)
     tiempo_estimado = max(3, (n_seleccionadas * 9) // MAX_WORKERS)
@@ -1044,94 +1044,8 @@ if uploaded_file:
             num_pag = idx + 1
             lote_trabajo.append((num_pag, img, txt))
 
-        if ignorar_paginas_densas:
-            lote_trabajo = [item for item in lote_trabajo if item[0] > 1]
-
         if not lote_trabajo:
-            st.warning("⚠️ No quedan páginas tras filtros.")
-        else:
-            st.markdown("<div class='section-divider'><div class='line'></div><div class='dot'></div><div class='line'></div></div>", unsafe_allow_html=True)
-
-            # FEEDBACK INMEDIATO ANTES DE LANZAR HILOS
-            placeholder_status = st.empty()
-            barra = st.progress(0)
-            placeholder_status.markdown("""
-            <div class="proc-status">
-                <div class="proc-icon">🔄</div>
-                <div>
-                    <span class="proc-text-main">Iniciando Vertex AI...</span>
-                    <span class="proc-text-sub">Llamadas concurrentes en curso · Espera sin cerrar pestaña</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            barra.progress(5)  # movimiento visual inmediato
-
-            cerebro = CerebroOperario()
-            resultados_totales = []
-            alertas_totales = []
-            total_lote = len(lote_trabajo)
-
-            with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-                futuros = {executor.submit(_procesar_una_pagina, item): item[0] for item in lote_trabajo}
-                completados = 0
-
-                for futuro in as_completed(futuros):
-                    completados += 1
-                    num_pag_completada = futuros[futuro]
-
-                    try:
-                        num_pag_result, datos_ia = futuro.result()
-                        placeholder_status.markdown(f"""
-                        <div class="proc-status">
-                            <div class="proc-icon">⚡</div>
-                            <div>
-                                <span class="proc-text-main">Página {num_pag_result} procesada</span>
-                                <span class="proc-text-sub">({completados} de {total_lote})</span>
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-
-                        if isinstance(datos_ia, dict) and "error" in datos_ia:
-                            st.error(f"❌ Pág {num_pag_result}: {datos_ia['error']}")
-                        elif datos_ia:
-                            datos_pag, alertas_pag = cerebro.procesar_pagina(datos_ia, num_pag_result)
-                            resultados_totales.extend(datos_pag)
-                            alertas_totales.extend(alertas_pag)
-
-                    except Exception as e:
-                        st.error(f"❌ Error en página {num_pag_completada}: {str(e)}")
-
-                    # barra con movimiento mínimo aunque vaya lento
-                    progreso = max(5, int((completados / total_lote) * 100))
-                    barra.progress(progreso)
-
-            # final
-            placeholder_status.markdown("""
-            <div class="proc-status" style="border-color:#a7f3d0;background:#ecfdf5;">
-                <div class="proc-icon" style="background:#d1fae5;border-color:#a7f3d0;">✅</div>
-                <div>
-                    <span class="proc-text-main" style="color:#065f46;">Procesamiento completado</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            barra.progress(100)
-
-            resultados_totales.sort(key=lambda x: x.get("ID", ""))
-            st.session_state['df_final'] = pd.DataFrame(resultados_totales)
-            st.session_state['alertas_final'] = alertas_totales
-
-    if procesar and n_seleccionadas > 0:
-        lote_trabajo = []
-        for idx in seleccionadas_indices:
-            img, txt = datos_pdf[idx]
-            num_pag = idx + 1
-            lote_trabajo.append((num_pag, img, txt))
-
-        if ignorar_paginas_densas:
-            lote_trabajo = [item for item in lote_trabajo if item[0] > 1]
-
-        if not lote_trabajo:
-            st.warning("⚠️ No quedan páginas tras filtros.")
+            st.warning("⚠️ No hay páginas seleccionadas.")
         else:
             st.markdown("<div class='section-divider'><div class='line'></div><div class='dot'></div><div class='line'></div></div>", unsafe_allow_html=True)
 
@@ -1201,7 +1115,7 @@ if uploaded_file:
             st.session_state['alertas_final'] = alertas_totales
 
             if not resultados_totales:
-                st.warning("No se extrajeron piezas válidas. Desactiva el filtro de páginas densas y prueba otra vez.")
+                st.warning("No se extrajeron piezas válidas. Prueba con otro PDF.")
             st.rerun()
 
 
