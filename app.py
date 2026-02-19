@@ -1388,6 +1388,7 @@ if uploaded_file:
 
             if marcado:
                 seleccionadas.append((i+1, img))
+                
                 # Control inteligente de páginas densas (conjuntos)
 ignorar_paginas_densas = st.checkbox(
     "🚫 Ignorar páginas densas / conjuntos / vistas generales",
