@@ -1102,13 +1102,16 @@ class CerebroOperario:
             except:
                 largo, ancho, espesor, cantidad = 0, 0, 19, 1
 
+            # --- NUEVA REGLA: FILTRO ANTIFANTASMAS (0x0) ---
+            # Si la IA leyó el nombre pero no encontró medidas, ignoramos la línea.
+            # No queremos líneas vacías en el CSV final.
             if largo == 0 and ancho == 0:
+                # Opcional: Si quieres ver qué ignoró, descomenta el print
+                # print(f" 👻 Fantasma ignorado: {nombre}")
                 continue
 
-            l_txt, a_txt = self.extraer_medidas_texto(nombre + " " + notas)
-            if l_txt and (largo == 0 or abs(largo - l_txt) > 50):
-                largo, ancho = l_txt, a_txt
-                notas += " | MEDIDA DE TEXTO"
+            if largo == 0 and ancho == 0:
+                continue
             if largo < ancho:
                 largo, ancho = ancho, largo
             if "PEGAR" in notas or "DOBLE" in notas or "APLACAR" in notas or "SANDWICH" in notas:
@@ -1176,40 +1179,50 @@ class CerebroOperario:
 def analizar_imagen_con_ia(imagen):
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel("gemini-3-flash-preview")
+    
+    prompt_base = """
+    Eres Técnico de Oficina Técnica experto en despieces de mobiliario baño y cocina. Analiza la imagen COMPLETA.
 
-    prompt = """
-    Eres un Técnico de Oficina Técnica. Extrae datos para fabricación.
+    1. Localiza la tabla de partes (POS | Q.U. | CODICE PARTE | DESCRIZIONE | NOTE).
+    2. Extrae TODAS las filas sin excepción.
+    3. Para cada pieza:
+       - id = número POS o código parte
+       - nombre = DESCRIZIONE exacta
+       - largo y ancho = cotas reales o bounding box (prioriza números grandes)
+       - espesor = 19 si no se indica (estándar melamina)
+       - cantidad = Q.U.
+       - material = infiere del nombre o pon "MELAMINA 19mm"
+       - notas = cualquier texto adicional
 
-    INSTRUCCIONES DE LECTURA:
-    1. IGNORA PÁGINAS INFORMATIVAS (Títulos: "Hoja informativa", "Vista General").
-    2. TABLAS: Si hay tabla, extrae cada fila.
-    3. DIBUJOS: Extrae el BOUNDING BOX (Rectángulo máximo exterior).
-       - Ignora agujeros interiores.
-       - Ignora cotas de posición.
-    4. NOTAS: Busca: "Pegar", "Qube", "Radio", "R[num]", "Inglete", "Krion".
-
-    FORMATO JSON ESTRICTO:
-    [
-      {"id": "...", "nombre": "...", "largo": 0.0, "ancho": 0.0, "espesor": 0.0, "material": "...", "cantidad": 0, "notas": "..."},
-      ...
-    ]
+    FORMATO JSON ESTRICTO. Devuelve solo el array. No omitas ninguna pieza.
     """
+
     try:
-        # Convertir PIL a bytes para evitar problemas
         buffer = io.BytesIO()
         imagen.save(buffer, format="PNG")
         buffer.seek(0)
+        img_part = {"mime_type": "image/png", "data": buffer.getvalue()}
 
-        img_part = {
-            "mime_type": "image/png",
-            "data": buffer.getvalue()
-        }
-
-        response = model.generate_content([prompt, img_part])
+        # Primera llamada
+        response = model.generate_content([prompt_base, img_part])
         texto = response.text.replace("```json", "").replace("```", "").strip()
-        return json.loads(texto)
-    except json.JSONDecodeError:
-        return {"error": f"JSON inválido. Respuesta: {response.text[:300]}"}
+
+        try:
+            return json.loads(texto)
+        except json.JSONDecodeError:
+            # FALLBACK: segunda llamada para corregir JSON
+            prompt_fix = f"""
+            El siguiente texto es la respuesta de un modelo que debía devolver JSON válido pero falló.
+            Corrígelo y devuelve SOLO el JSON válido, sin explicaciones, sin texto adicional, sin ```json.
+            Texto roto:
+            {texto}
+            """
+            response_fix = model.generate_content(prompt_fix)
+            texto_fix = response_fix.text.replace("```json", "").replace("```", "").strip()
+            return json.loads(texto_fix)
+
+    except json.JSONDecodeError as e:
+        return {"error": f"JSON aún inválido tras fallback: {str(e)}"}
     except Exception as e:
         return {"error": str(e)}
 
