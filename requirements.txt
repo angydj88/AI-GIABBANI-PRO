@@ -4,3 +4,5 @@ pandas
 pillow
 openpyxl
 PyMuPDF
+google-cloud-aiplatform>=1.64.0
+google-auth
