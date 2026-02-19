@@ -1195,29 +1195,46 @@ if 'df_final' in st.session_state:
         }
     )
 
-        # Exportación
-        csv = df_editado.to_csv(index=False, sep=";").encode('utf-8')
+            df_editado = st.data_editor(
+        df,
+        num_rows="dynamic",
+        use_container_width=True,
+        height=600,
+        column_config={
+            "ID": st.column_config.TextColumn("ID", width="small"),
+            "Nombre": st.column_config.TextColumn("Nombre", width="medium"),
+            "Largo": st.column_config.NumberColumn("Largo", format="%.1f mm", width="small"),
+            "Ancho": st.column_config.NumberColumn("Ancho", format="%.1f mm", width="small"),
+            "Espesor": st.column_config.NumberColumn("Espesor", format="%.0f mm", width="small"),
+            "Material": st.column_config.TextColumn("Material", width="medium"),
+            "Cantidad": st.column_config.NumberColumn("Cant.", format="%d", width="small"),
+            "Notas": st.column_config.TextColumn("Notas", width="large"),
+        }
+    )
 
-        col_dl, col_dl_info = st.columns([2, 4])
-        with col_dl:
-            st.download_button(
-                label=f"⬇  EXPORTAR  ·  {nombre_csv}",
-                data=csv,
-                file_name=nombre_csv,
-                mime="text/csv",
-                type="primary",
-                use_container_width=True
-            )
-        with col_dl_info:
-            st.markdown(f"""
-            <div style="display:flex; align-items:center; padding:0.7rem 0;">
-                <span style="color: #94a3b8; font-size:0.8rem;">
-                    Formato: <strong style="color: #2563eb;">CSV (;)</strong> &nbsp;·&nbsp;
-                    Codificación: <strong style="color: #2563eb;">UTF-8</strong> &nbsp;·&nbsp;
-                    Compatible con WinCut, CutRite, Ardis
-                </span>
-            </div>
-            """, unsafe_allow_html=True)
+    # Exportación
+    csv = df_editado.to_csv(index=False, sep=";").encode('utf-8')
+
+    col_dl, col_dl_info = st.columns([2, 4])
+    with col_dl:
+        st.download_button(
+            label=f"⬇  EXPORTAR  ·  {nombre_csv}",
+            data=csv,
+            file_name=nombre_csv,
+            mime="text/csv",
+            type="primary",
+            use_container_width=True
+        )
+    with col_dl_info:
+        st.markdown(f"""
+        <div style="display:flex; align-items:center; padding:0.7rem 0;">
+            <span style="color: #94a3b8; font-size:0.8rem;">
+                Formato: <strong style="color: #2563eb;">CSV (;)</strong> &nbsp;·&nbsp;
+                Codificación: <strong style="color: #2563eb;">UTF-8</strong> &nbsp;·&nbsp;
+                Compatible con WinCut, CutRite, Ardis
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
