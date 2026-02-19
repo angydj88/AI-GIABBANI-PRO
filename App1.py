@@ -581,7 +581,7 @@ try:
 
     vertexai.init(
         project=st.secrets["GCP_PROJECT_ID"],
-        location=st.secrets["GCP_LOCATION"],
+        location="global"["GCP_LOCATION"],
         credentials=credentials
     )
 except Exception as e:
