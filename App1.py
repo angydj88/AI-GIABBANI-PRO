@@ -1220,145 +1220,132 @@ if 'df_final' in st.session_state:
     if df.empty:
         st.error("El análisis terminó pero no encontró piezas. Sube otro PDF o desactiva el filtro página 1.")
     else:
-        # todo el resto del bloque KPI, alertas, tabla y download queda igual
-
-    st.markdown("""
-    <div class="section-divider">
-        <div class="line"></div>
-        <div class="dot"></div>
-        <div class="dot" style="margin: 0 -4px;"></div>
-        <div class="dot"></div>
-        <div class="line"></div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    df = st.session_state['df_final']
-    alertas_list = st.session_state.get('alertas_final', [])
-    nombre_csv = st.session_state.get('nombre_csv', 'despiece_corte.csv')
-
-    total_piezas = int(df['Cantidad'].sum()) if 'Cantidad' in df.columns else len(df)
-    total_lineas = len(df)
-    materiales_unicos = df['Material'].nunique() if 'Material' in df.columns else 0
-
-    # ── Header resultados ────────────────────────────────────────────────────
-    st.markdown(f"""
-    <div class="sec-header">
-        <div class="sec-icon">📋</div>
-        <div class="sec-text">
-            <div class="sec-title">Lista de Corte · Exportación WinCut</div>
-            <div class="sec-sub">Resultado del análisis híbrido con reglas de ingeniería aplicadas</div>
+        st.markdown("""
+        <div class="section-divider">
+            <div class="line"></div>
+            <div class="dot"></div>
+            <div class="dot" style="margin: 0 -4px;"></div>
+            <div class="dot"></div>
+            <div class="line"></div>
         </div>
-        <div class="sec-badge" style="color: #059669; border-color: #a7f3d0; background: #ecfdf5;">
-            ✓ LISTO
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    # ── KPI resultados ───────────────────────────────────────────────────────
-    st.markdown(f"""
-    <div class="kpi-grid">
-        <div class="kpi-card emerald">
-            <div class="kpi-label">Líneas de Corte</div>
-            <div class="kpi-value">{total_lineas}</div>
-            <div class="kpi-sub">Registros únicos</div>
-        </div>
-        <div class="kpi-card blue">
-            <div class="kpi-label">Total Piezas</div>
-            <div class="kpi-value">{total_piezas}</div>
-            <div class="kpi-sub">Sumando cantidades</div>
-        </div>
-        <div class="kpi-card blue">
-            <div class="kpi-label">Materiales</div>
-            <div class="kpi-value">{materiales_unicos}</div>
-            <div class="kpi-sub">Tipos distintos</div>
-        </div>
-        <div class="kpi-card amber">
-            <div class="kpi-label">Alertas</div>
-            <div class="kpi-value">{len(alertas_list)}</div>
-            <div class="kpi-sub">Requieren revisión</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+        nombre_csv = st.session_state.get('nombre_csv', 'despiece_corte.csv')
 
-    # ── Panel de alertas ─────────────────────────────────────────────────────
-    if alertas_list:
+        total_piezas = int(df['Cantidad'].sum()) if 'Cantidad' in df.columns else len(df)
+        total_lineas = len(df)
+        materiales_unicos = df['Material'].nunique() if 'Material' in df.columns else 0
+
+        # Header resultados
         st.markdown(f"""
-        <div class="sec-header" style="margin-top:1.5rem;">
-            <div class="sec-icon" style="background: #fef3c7; border-color: #fde68a;">⚠️</div>
+        <div class="sec-header">
+            <div class="sec-icon">📋</div>
             <div class="sec-text">
-                <div class="sec-title">Informe de Ingeniería</div>
-                <div class="sec-sub">Alertas generadas por el motor de reglas experto</div>
+                <div class="sec-title">Lista de Corte · Exportación WinCut</div>
+                <div class="sec-sub">Resultado del análisis híbrido con reglas de ingeniería aplicadas</div>
             </div>
-            <div class="sec-badge">{len(alertas_list)} AVISOS</div>
+            <div class="sec-badge" style="color: #059669; border-color: #a7f3d0; background: #ecfdf5;">
+                ✓ LISTO
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
-        with st.expander(f"Ver {len(alertas_list)} alertas del análisis", expanded=True):
-            for a in alertas_list:
-                if "PINZAS" in a or "KRION" in a or "METAL" in a:
-                    st.error(a)
-                elif "SÁNDWICH" in a.upper() or "DESCONOCIDO" in a:
-                    st.warning(a)
-                else:
-                    st.info(a)
-
-    # ── Tabla editable ───────────────────────────────────────────────────────
-    st.markdown("""
-    <div class="table-label">
-        <div class="bar"></div>
-        <span>Tabla editable · Doble clic para modificar valores</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    df_editado = st.data_editor(
-        st.session_state['df_final'],
-        num_rows="dynamic",
-        use_container_width=True,
-        height=600,
-        column_config={
-            "ID": st.column_config.TextColumn("ID", width="small"),
-            "Nombre": st.column_config.TextColumn("Nombre", width="medium"),
-            "Largo": st.column_config.NumberColumn("Largo", format="%.1f mm", width="small"),
-            "Ancho": st.column_config.NumberColumn("Ancho", format="%.1f mm", width="small"),
-            "Espesor": st.column_config.NumberColumn("Espesor", format="%.0f mm", width="small"),
-            "Material": st.column_config.TextColumn("Material", width="medium"),
-            "Cantidad": st.column_config.NumberColumn("Cant.", format="%d", width="small"),
-            "Notas": st.column_config.TextColumn("Notas", width="large"),
-        }
-    )
-
-    # ── Separador ────────────────────────────────────────────────────────────
-    st.markdown("""
-    <div class="section-divider">
-        <div class="line"></div>
-        <div class="dot"></div>
-        <div class="line"></div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ── Exportación ──────────────────────────────────────────────────────────
-    csv = df_editado.to_csv(index=False, sep=";").encode('utf-8')
-
-    col_dl, col_dl_info = st.columns([2, 4])
-    with col_dl:
-        st.download_button(
-            label=f"⬇  EXPORTAR  ·  {nombre_csv}",
-            data=csv,
-            file_name=nombre_csv,
-            mime="text/csv",
-            type="primary",
-            use_container_width=True
-        )
-    with col_dl_info:
+        # KPI resultados
         st.markdown(f"""
-        <div style="display:flex; align-items:center; padding:0.7rem 0;">
-            <span style="color: #94a3b8; font-size:0.8rem;">
-                Formato: <strong style="color: #2563eb;">CSV (;)</strong> &nbsp;·&nbsp;
-                Codificación: <strong style="color: #2563eb;">UTF-8</strong> &nbsp;·&nbsp;
-                Compatible con WinCut, CutRite, Ardis
-            </span>
+        <div class="kpi-grid">
+            <div class="kpi-card emerald">
+                <div class="kpi-label">Líneas de Corte</div>
+                <div class="kpi-value">{total_lineas}</div>
+                <div class="kpi-sub">Registros únicos</div>
+            </div>
+            <div class="kpi-card blue">
+                <div class="kpi-label">Total Piezas</div>
+                <div class="kpi-value">{total_piezas}</div>
+                <div class="kpi-sub">Sumando cantidades</div>
+            </div>
+            <div class="kpi-card blue">
+                <div class="kpi-label">Materiales</div>
+                <div class="kpi-value">{materiales_unicos}</div>
+                <div class="kpi-sub">Tipos distintos</div>
+            </div>
+            <div class="kpi-card amber">
+                <div class="kpi-label">Alertas</div>
+                <div class="kpi-value">{len(alertas_list)}</div>
+                <div class="kpi-sub">Requieren revisión</div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
+
+        # Panel de alertas (mantengo tu lógica original)
+        if alertas_list:
+            st.markdown(f"""
+            <div class="sec-header" style="margin-top:1.5rem;">
+                <div class="sec-icon" style="background: #fef3c7; border-color: #fde68a;">⚠️</div>
+                <div class="sec-text">
+                    <div class="sec-title">Informe de Ingeniería</div>
+                    <div class="sec-sub">Alertas generadas por el motor de reglas experto</div>
+                </div>
+                <div class="sec-badge">{len(alertas_list)} AVISOS</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            with st.expander(f"Ver {len(alertas_list)} alertas del análisis", expanded=True):
+                for a in alertas_list:
+                    if "PINZAS" in a or "KRION" in a or "METAL" in a:
+                        st.error(a)
+                    elif "SÁNDWICH" in a.upper() or "DESCONOCIDO" in a:
+                        st.warning(a)
+                    else:
+                        st.info(a)
+
+        # Tabla editable
+        st.markdown("""
+        <div class="table-label">
+            <div class="bar"></div>
+            <span>Tabla editable · Doble clic para modificar valores</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+        df_editado = st.data_editor(
+            df,
+            num_rows="dynamic",
+            use_container_width=True,
+            height=600,
+            column_config={
+                "ID": st.column_config.TextColumn("ID", width="small"),
+                "Nombre": st.column_config.TextColumn("Nombre", width="medium"),
+                "Largo": st.column_config.NumberColumn("Largo", format="%.1f mm", width="small"),
+                "Ancho": st.column_config.NumberColumn("Ancho", format="%.1f mm", width="small"),
+                "Espesor": st.column_config.NumberColumn("Espesor", format="%.0f mm", width="small"),
+                "Material": st.column_config.TextColumn("Material", width="medium"),
+                "Cantidad": st.column_config.NumberColumn("Cant.", format="%d", width="small"),
+                "Notas": st.column_config.TextColumn("Notas", width="large"),
+            }
+        )
+
+        # Exportación
+        csv = df_editado.to_csv(index=False, sep=";").encode('utf-8')
+
+        col_dl, col_dl_info = st.columns([2, 4])
+        with col_dl:
+            st.download_button(
+                label=f"⬇  EXPORTAR  ·  {nombre_csv}",
+                data=csv,
+                file_name=nombre_csv,
+                mime="text/csv",
+                type="primary",
+                use_container_width=True
+            )
+        with col_dl_info:
+            st.markdown(f"""
+            <div style="display:flex; align-items:center; padding:0.7rem 0;">
+                <span style="color: #94a3b8; font-size:0.8rem;">
+                    Formato: <strong style="color: #2563eb;">CSV (;)</strong> &nbsp;·&nbsp;
+                    Codificación: <strong style="color: #2563eb;">UTF-8</strong> &nbsp;·&nbsp;
+                    Compatible con WinCut, CutRite, Ardis
+                </span>
+            </div>
+            """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
