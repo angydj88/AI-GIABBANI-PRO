@@ -1087,5 +1087,5 @@ st.markdown(f"""
 <div class="corp-footer">
     <div class="footer-logo-text">GABBIANI MASTER AI</div>
     <div class="footer-sub">v6.0 Enterprise · {GEMINI_MODEL} · {backend_label} · Pipeline Dual Concurrente {MAX_WORKERS}x</div>
-    <div class="footer-copy">© 2025 · SISTEMA EXPERTO DE OPTIMIZACIÓN DE CORTE INDUSTRIAL</div>
+    <div class="footer-copy">© 2026 · SISTEMA EXPERTO DE OPTIMIZACIÓN DE CORTE INDUSTRIAL</div>
 </div>""", unsafe_allow_html=True)
